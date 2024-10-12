@@ -53,7 +53,7 @@ export default function Home() {
             The one-stop platform for all your printing needs. Find, compare, and order from printing presses effortlessly.
           </Typography>
           <Typography className="text-md text-gray-600 mb-8">
-            Whether you're a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
+            Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
           </Typography>
           <Button variant="contained" color="primary" className="bg-green-600 text-white hover:bg-green-700">
             Get Started
