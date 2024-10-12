@@ -2,17 +2,14 @@
 
 import Link from 'next/link';
 import { AppBar, Toolbar, Button, Container, Typography, useMediaQuery } from '@mui/material';
-import Image from 'next/image';
 
 export default function Home() {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {/* Navigation Bar */}
       <AppBar position="fixed" className="bg-green-600 shadow-md">
         <Toolbar className="flex justify-between">
-          {/* Logo on the left */}
           <div className="flex items-center">
             <Link href="#home" passHref>
               <Typography variant="h5" className="ml-2 text-white font-bold">
@@ -21,7 +18,6 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Conditionally render Navigation Items and Login Button based on screen size */}
           <div className="flex items-center space-x-4">
             {!isSmallScreen && (
               <>
@@ -43,7 +39,6 @@ export default function Home() {
         </Toolbar>
       </AppBar>
 
-      {/* Home Section */}
       <section id="home" className="flex flex-col items-center justify-center h-screen py-16 text-center bg-white">
         <Container>
           <Typography variant="h2" className="text-4xl font-bold mb-4">
@@ -61,7 +56,6 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="flex items-center justify-center h-screen py-16 bg-gray-50">
         <Container>
           <Typography variant="h3" className="text-3xl font-bold text-center mb-8">
@@ -96,7 +90,6 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* Testimonials Section */}
       <section id="testimonials" className="flex items-center justify-center h-screen py-16 bg-white">
         <Container>
           <Typography variant="h3" className="text-3xl font-bold text-center mb-8">
@@ -105,7 +98,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="p-6 bg-gray-50 shadow rounded-lg">
               <Typography className="text-gray-800">
-                "PrintHub made it so easy to find the right printing press for our business. Highly recommend!"
+                &quot;PrintHub made it so easy to find the right printing press for our business. Highly recommend!&quot;
               </Typography>
               <Typography variant="subtitle1" className="font-bold text-gray-700 mt-4">
                 - John Doe
@@ -113,7 +106,7 @@ export default function Home() {
             </div>
             <div className="p-6 bg-gray-50 shadow rounded-lg">
               <Typography className="text-gray-800">
-                "Finally, a platform that simplifies the printing process. I saved so much time."
+                &quot;Finally, a platform that simplifies the printing process. I saved so much time.&quot;
               </Typography>
               <Typography variant="subtitle1" className="font-bold text-gray-700 mt-4">
                 - Jane Smith
@@ -123,7 +116,6 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* Footer */}
       <footer className="py-4 bg-gray-50">
         <Container className="text-center">
           <Typography className="text-black text-xs">
