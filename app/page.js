@@ -78,7 +78,7 @@ export default function Home() {
           <Typography 
             sx={{ fontSize: { xs: '0.9rem', md: '1.1rem' }, color: 'gray', mb: 8 }}
           >
-            Whether you're a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
+            Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
           </Typography>
           <Button 
             variant="contained" 
@@ -146,7 +146,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
-                "PrintHub made it so easy to find the right printing press for our business. Highly recommend!"
+                &quot;PrintHub made it so easy to find the right printing press for our business. Highly recommend!&quot;
               </Typography>
               <Typography 
                 variant="subtitle1" 
@@ -157,7 +157,7 @@ export default function Home() {
             </div>
             <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
-                "Finally, a platform that simplifies the printing process. I saved so much time."
+                &quot;Finally, a platform that simplifies the printing process. I saved so much time.&quot;
               </Typography>
               <Typography 
                 variant="subtitle1" 
