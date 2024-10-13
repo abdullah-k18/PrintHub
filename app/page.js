@@ -8,12 +8,23 @@ export default function Home() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <AppBar position="fixed" className="bg-green-600 shadow-md">
-        <Toolbar className="flex justify-between">
+      <AppBar 
+        position="fixed" 
+        sx={{ backgroundColor: '#28a745', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
+      >
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
           <div className="flex items-center">
             <Link href="#home" passHref>
-              <Typography variant="h5" className="ml-2 text-white font-bold">
-                Print<span className="ml-1 text-green-600 bg-white px-2 py-1 rounded-lg font-bold">Hub</span>
+              <Typography 
+                variant="h5" 
+                sx={{ ml: 2, fontWeight: 'bold', color: 'white' }}
+              >
+                Print
+                <span 
+                  style={{ color: '#28a745', backgroundColor: 'white', padding: '2px 8px', borderRadius: '6px', marginLeft: '5px' }}
+                >
+                  Hub
+                </span>
               </Typography>
             </Link>
           </div>
@@ -21,18 +32,30 @@ export default function Home() {
           <div className="flex items-center space-x-4">
             {!isSmallScreen && (
               <>
-                <Link href="#home" passHref>
-                  <Button className="text-white font-bold">Home</Button>
+                <Link href="#home" passHref className='transition-transform duration-100 ease-in-out hover:scale-105'>
+                  <Button sx={{ color: 'white', fontWeight: 'bold' }}>
+                    Home
+                  </Button>
                 </Link>
-                <Link href="#features" passHref>
-                  <Button className="text-white font-bold">Features</Button>
+                <Typography sx={{fontWeight: 'bold'}}>|</Typography>
+                <Link href="#features" passHref className='transition-transform duration-100 ease-in-out hover:scale-105'>
+                  <Button sx={{ color: 'white', fontWeight: 'bold' }}>
+                    Features
+                  </Button>
                 </Link>
-                <Link href="#testimonials" passHref>
-                  <Button className="text-white font-bold">Testimonials</Button>
+                <Typography sx={{fontWeight: 'bold'}}>|</Typography>
+                <Link href="#reviews" passHref className='transition-transform duration-100 ease-in-out hover:scale-105'>
+                  <Button sx={{ color: 'white', fontWeight: 'bold' }}>
+                    Reviews
+                  </Button>
                 </Link>
               </>
             )}
-            <Button variant="contained" color="default" className="bg-white text-green-600 font-bold">
+            <Button 
+              variant="contained" 
+              sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
+              className='transition-transform duration-300 ease-in-out hover:scale-105'
+            >
               Login
             </Button>
           </div>
@@ -41,16 +64,26 @@ export default function Home() {
 
       <section id="home" className="flex flex-col items-center justify-center h-screen py-16 text-center bg-white">
         <Container>
-          <Typography variant="h2" className="text-4xl font-bold mb-4">
+          <Typography 
+            variant="h2" 
+            sx={{ fontSize: { xs: '2rem', md: '3rem' }, fontWeight: 'bold', mb: 4 }}
+          >
             Welcome to PrintHub
           </Typography>
-          <Typography className="text-lg text-gray-700 mb-4">
+          <Typography 
+            sx={{ fontSize: { xs: '1rem', md: '1.25rem' }, color: 'gray', mb: 4 }}
+          >
             The one-stop platform for all your printing needs. Find, compare, and order from printing presses effortlessly.
           </Typography>
-          <Typography className="text-md text-gray-600 mb-8">
-            Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
+          <Typography 
+            sx={{ fontSize: { xs: '0.9rem', md: '1.1rem' }, color: 'gray', mb: 8 }}
+          >
+            Whether you're a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
           </Typography>
-          <Button variant="contained" color="primary" className="bg-green-600 text-white hover:bg-green-700">
+          <Button 
+            variant="contained" 
+            sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
+          >
             Get Started
           </Button>
         </Container>
@@ -58,31 +91,43 @@ export default function Home() {
 
       <section id="features" className="flex items-center justify-center h-screen py-16 bg-gray-50">
         <Container>
-          <Typography variant="h3" className="text-3xl font-bold text-center mb-8">
+          <Typography 
+            variant="h3" 
+            sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 'bold', textAlign: 'center', mb: 8 }}
+          >
             Features
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 bg-white shadow rounded-lg text-center">
-              <Typography variant="h5" className="font-bold mb-4">
+            <div className="p-6 bg-white shadow rounded-lg text-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+              <Typography 
+                variant="h5" 
+                sx={{ fontWeight: 'bold', mb: 4 }}
+              >
                 Advanced Search
               </Typography>
-              <Typography className="text-gray-600">
+              <Typography sx={{ color: 'gray' }}>
                 Easily find printing presses by location, product type, and more.
               </Typography>
             </div>
-            <div className="p-6 bg-white shadow rounded-lg text-center">
-              <Typography variant="h5" className="font-bold mb-4">
+            <div className="p-6 bg-white shadow rounded-lg text-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+              <Typography 
+                variant="h5" 
+                sx={{ fontWeight: 'bold', mb: 4 }}
+              >
                 User Reviews
               </Typography>
-              <Typography className="text-gray-600">
+              <Typography sx={{ color: 'gray' }}>
                 Make informed decisions with user reviews and ratings.
               </Typography>
             </div>
-            <div className="p-6 bg-white shadow rounded-lg text-center">
-              <Typography variant="h5" className="font-bold mb-4">
+            <div className="p-6 bg-white shadow rounded-lg text-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+              <Typography 
+                variant="h5" 
+                sx={{ fontWeight: 'bold', mb: 4 }}
+              >
                 Product Listings
               </Typography>
-              <Typography className="text-gray-600">
+              <Typography sx={{ color: 'gray' }}>
                 View and compare products, prices, and minimum order quantities.
               </Typography>
             </div>
@@ -90,39 +135,99 @@ export default function Home() {
         </Container>
       </section>
 
-      <section id="testimonials" className="flex items-center justify-center h-screen py-16 bg-white">
+      <section id="reviews" className="flex items-center justify-center h-screen py-16 bg-white">
         <Container>
-          <Typography variant="h3" className="text-3xl font-bold text-center mb-8">
+          <Typography 
+            variant="h3" 
+            sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 'bold', textAlign: 'center', mb: 8 }}
+          >
             What Our Users Say
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 bg-gray-50 shadow rounded-lg">
-              <Typography className="text-gray-800">
-                &quot;PrintHub made it so easy to find the right printing press for our business. Highly recommend!&quot;
+            <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+              <Typography sx={{ color: 'gray.800' }}>
+                "PrintHub made it so easy to find the right printing press for our business. Highly recommend!"
               </Typography>
-              <Typography variant="subtitle1" className="font-bold text-gray-700 mt-4">
-                - John Doe
+              <Typography 
+                variant="subtitle1" 
+                sx={{ fontWeight: 'bold', color: 'gray.700', mt: 4 }}
+              >
+                - Ahmad Shaikh
               </Typography>
             </div>
-            <div className="p-6 bg-gray-50 shadow rounded-lg">
-              <Typography className="text-gray-800">
-                &quot;Finally, a platform that simplifies the printing process. I saved so much time.&quot;
+            <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+              <Typography sx={{ color: 'gray.800' }}>
+                "Finally, a platform that simplifies the printing process. I saved so much time."
               </Typography>
-              <Typography variant="subtitle1" className="font-bold text-gray-700 mt-4">
-                - Jane Smith
+              <Typography 
+                variant="subtitle1" 
+                sx={{ fontWeight: 'bold', color: 'gray.700', mt: 4 }}
+              >
+                - Jan Ali
               </Typography>
             </div>
           </div>
         </Container>
       </section>
 
-      <footer className="py-4 bg-gray-50">
+      <footer className="py-8 bg-gray-50">
         <Container className="text-center">
-          <Typography className="text-black text-xs">
+          <div className="flex justify-center mb-6 space-x-8">
+            <Link href="#home" passHref>
+              <Typography 
+                sx={{ color: 'gray', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
+                className='transition-transform duration-100 ease-in-out hover:scale-105 cursor-pointer hover:text-green-600'
+              >
+                Home
+              </Typography>
+            </Link>
+            <Typography sx={{ color: 'gray', fontSize: '1rem', fontWeight: 'bold' }}>|</Typography>
+            <Link href="#features" passHref>
+              <Typography 
+                sx={{ color: 'gray', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
+                className='transition-transform duration-100 ease-in-out hover:scale-105 cursor-pointer hover:text-green-600'
+              >
+                Features
+              </Typography>
+            </Link>
+            <Typography sx={{ color: 'gray', fontSize: '1rem', fontWeight: 'bold' }}>|</Typography>
+            <Link href="#reviews" passHref>
+              <Typography 
+                sx={{ color: 'gray', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
+                className='transition-transform duration-100 ease-in-out hover:scale-105 cursor-pointer hover:text-green-600'
+              >
+                Reviews
+              </Typography>
+            </Link>
+          </div>
+
+          <div className="mb-8">
+            <Typography 
+              sx={{ fontSize: '1.2rem', fontWeight: 'bold', mb: 2 }}
+            >
+              Join PrintHub as a Seller
+            </Typography>
+            <Typography 
+              sx={{ fontSize: '1rem', color: 'gray', mb: 4 }}
+            >
+              Expand your reach and showcase your products to a broader audience. Start selling with us today.
+            </Typography>
+            <Button 
+              variant="contained" 
+              sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
+            >
+              Become a Seller
+            </Button>
+          </div>
+
+          <Typography 
+            sx={{ color: 'black', fontSize: '0.8rem' }}
+          >
             &copy; 2024 PrintHub. All rights reserved.
           </Typography>
         </Container>
       </footer>
+
     </div>
   );
 }
