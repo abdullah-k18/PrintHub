@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { AppBar, Toolbar, Button, Container, Typography, useMediaQuery } from '@mui/material';
 
-export default function Home() {
+export default function Press() {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
 
   return (
@@ -37,13 +37,13 @@ export default function Home() {
                     Home
                   </Button>
                 </Link>
-                <Typography sx={{fontWeight: 'bold'}}>|</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>|</Typography>
                 <Link href="#features" passHref className='transition-transform duration-100 ease-in-out hover:scale-105'>
                   <Button sx={{ color: 'white', fontWeight: 'bold' }}>
                     Features
                   </Button>
                 </Link>
-                <Typography sx={{fontWeight: 'bold'}}>|</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>|</Typography>
                 <Link href="#reviews" passHref className='transition-transform duration-100 ease-in-out hover:scale-105'>
                   <Button sx={{ color: 'white', fontWeight: 'bold' }}>
                     Reviews
@@ -73,12 +73,12 @@ export default function Home() {
           <Typography 
             sx={{ fontSize: { xs: '1rem', md: '1.25rem' }, color: 'gray', mb: 4 }}
           >
-            The one-stop platform for all your printing needs. Find, compare, and order from printing presses effortlessly.
+            Connect your printing press with clients in need of your services.
           </Typography>
           <Typography 
             sx={{ fontSize: { xs: '0.9rem', md: '1.1rem' }, color: 'gray', mb: 8 }}
           >
-            Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
+            List your products, manage inventory, and reach a broader audience with PrintHub.
           </Typography>
           <Button 
             variant="contained" 
@@ -95,7 +95,7 @@ export default function Home() {
             variant="h3" 
             sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 'bold', textAlign: 'center', mb: 8 }}
           >
-            Features
+            Features for Sellers
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-6 bg-white shadow rounded-lg text-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
@@ -103,10 +103,10 @@ export default function Home() {
                 variant="h5" 
                 sx={{ fontWeight: 'bold', mb: 4 }}
               >
-                Advanced Search
+                Inventory Management
               </Typography>
               <Typography sx={{ color: 'gray' }}>
-                Easily find printing presses by location, product type, and more.
+                Easily add, update, and manage your printing inventory with real-time stats.
               </Typography>
             </div>
             <div className="p-6 bg-white shadow rounded-lg text-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
@@ -114,10 +114,10 @@ export default function Home() {
                 variant="h5" 
                 sx={{ fontWeight: 'bold', mb: 4 }}
               >
-                User Reviews
+                Increase Visibility
               </Typography>
               <Typography sx={{ color: 'gray' }}>
-                Make informed decisions with user reviews and ratings.
+                Get discovered by businesses and individuals seeking top-tier printing services.
               </Typography>
             </div>
             <div className="p-6 bg-white shadow rounded-lg text-center transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
@@ -125,10 +125,10 @@ export default function Home() {
                 variant="h5" 
                 sx={{ fontWeight: 'bold', mb: 4 }}
               >
-                Product Listings
+                Streamline Orders
               </Typography>
               <Typography sx={{ color: 'gray' }}>
-                View and compare products, prices, and minimum order quantities.
+                Manage incoming orders seamlessly with our integrated order management system.
               </Typography>
             </div>
           </div>
@@ -141,29 +141,29 @@ export default function Home() {
             variant="h3" 
             sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 'bold', textAlign: 'center', mb: 8 }}
           >
-            What Our Users Say
+            What Other Sellers Say
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
-                &quot;PrintHub made it so easy to find the right printing press for our business. Highly recommend!&quot;
+                &quot;PrintHub helped us increase our orders by 40% within the first quarter of joining.&quot;
               </Typography>
               <Typography 
                 variant="subtitle1" 
                 sx={{ fontWeight: 'bold', color: 'gray.700', mt: 4 }}
               >
-                - Ahmad Shaikh
+                - Benifit Printers
               </Typography>
             </div>
             <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
-                &quot;Finally, a platform that simplifies the printing process. I saved so much time.&quot;
+                &quot;Our inventory management has never been easier. PrintHub is a game changer!&quot;
               </Typography>
               <Typography 
                 variant="subtitle1" 
                 sx={{ fontWeight: 'bold', color: 'gray.700', mt: 4 }}
               >
-                - Jan Ali
+                - Farooq Printers
               </Typography>
             </div>
           </div>
@@ -201,27 +201,6 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="mb-8">
-            <Typography 
-              sx={{ fontSize: '1.2rem', fontWeight: 'bold', mb: 2 }}
-            >
-              Join PrintHub as a Seller
-            </Typography>
-            <Typography 
-              sx={{ fontSize: '1rem', color: 'gray', mb: 4 }}
-            >
-              Expand your reach and showcase your products to a broader audience. Start selling with us today.
-            </Typography>
-            <Link href="/press" passHref>
-              <Button 
-                variant="contained" 
-                sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
-              >
-                Become a Seller
-              </Button>
-            </Link>
-          </div>
-
           <Typography 
             sx={{ color: 'black', fontSize: '0.8rem' }}
           >
@@ -229,7 +208,6 @@ export default function Home() {
           </Typography>
         </Container>
       </footer>
-
     </div>
   );
 }
