@@ -51,13 +51,15 @@ export default function Press() {
                 </Link>
               </>
             )}
-            <Button 
-              variant="contained" 
-              sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
-              className='transition-transform duration-300 ease-in-out hover:scale-105'
-            >
-              Login
-            </Button>
+            <Link href="/press/login" passHref>
+              <Button 
+                variant="contained" 
+                sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
+                className='transition-transform duration-300 ease-in-out hover:scale-105'
+              >
+                Login
+              </Button>
+            </Link>
           </div>
         </Toolbar>
       </AppBar>
@@ -80,12 +82,14 @@ export default function Press() {
           >
             List your products, manage inventory, and reach a broader audience with PrintHub.
           </Typography>
-          <Button 
-            variant="contained" 
-            sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
-          >
-            Get Started
-          </Button>
+          <Link href="/press/register" passHref>
+            <Button 
+              variant="contained" 
+              sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
+            >
+              Get Started
+            </Button>
+          </Link>
         </Container>
       </section>
 
