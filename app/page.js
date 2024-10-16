@@ -89,7 +89,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <section id="features" className="flex items-center justify-center h-screen py-16 bg-gray-50">
+      <section id="features" className="flex items-center justify-center h-screen py-16  bg-gray-100">
         <Container>
           <Typography 
             variant="h3" 
@@ -144,7 +144,7 @@ export default function Home() {
             What Our Users Say
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+            <div className="p-6  bg-gray-100 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
                 &quot;PrintHub made it so easy to find the right printing press for our business. Highly recommend!&quot;
               </Typography>
@@ -155,7 +155,7 @@ export default function Home() {
                 - Ahmad Shaikh
               </Typography>
             </div>
-            <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+            <div className="p-6  bg-gray-100 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
                 &quot;Finally, a platform that simplifies the printing process. I saved so much time.&quot;
               </Typography>
@@ -170,7 +170,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <footer className="py-8 bg-gray-50">
+      <footer className="py-8  bg-gray-100">
         <Container className="text-center">
           <div className="flex justify-center mb-6 space-x-8">
             <Link href="#home" passHref>

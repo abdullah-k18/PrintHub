@@ -93,7 +93,7 @@ export default function Press() {
         </Container>
       </section>
 
-      <section id="features" className="flex items-center justify-center h-screen py-16 bg-gray-50">
+      <section id="features" className="flex items-center justify-center h-screen py-16  bg-gray-100">
         <Container>
           <Typography 
             variant="h3" 
@@ -148,7 +148,7 @@ export default function Press() {
             What Other Sellers Say
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+            <div className="p-6  bg-gray-100 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
                 &quot;PrintHub helped us increase our orders by 40% within the first quarter of joining.&quot;
               </Typography>
@@ -159,7 +159,7 @@ export default function Press() {
                 - Benifit Printers
               </Typography>
             </div>
-            <div className="p-6 bg-gray-50 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
+            <div className="p-6  bg-gray-100 shadow rounded-lg transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer">
               <Typography sx={{ color: 'gray.800' }}>
                 &quot;Our inventory management has never been easier. PrintHub is a game changer!&quot;
               </Typography>
@@ -174,7 +174,7 @@ export default function Press() {
         </Container>
       </section>
 
-      <footer className="py-8 bg-gray-50">
+      <footer className="py-8  bg-gray-100">
         <Container className="text-center">
           <div className="flex justify-center mb-6 space-x-8">
             <Link href="#home" passHref>

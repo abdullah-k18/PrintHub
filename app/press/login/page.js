@@ -6,25 +6,26 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { AppBar, Toolbar, Button, Container, TextField, Typography, CircularProgress } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login Successful!");
+      toast.success("Login Successful!");
       router.push('/press/dashboard');
     } catch (error) {
-      setError("Login failed. " + error.message);
+      toast.error("Login failed. " + error.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -95,8 +96,6 @@ export default function Login() {
               sx={{ mb: 3 }}
             />
 
-            {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
-
             <Typography variant="body2" sx={{ mb: 2, textAlign: 'right' }}>
               <Link href="/press/forgot-password" className='text-blue-600 hover:underline'>
                 Forgot Password?
@@ -129,8 +128,8 @@ export default function Login() {
           </form>
         </div>
       </Container>
-
-      <footer className="py-4 bg-gray-50">
+      <hr />
+      <footer className="py-4 bg-gray-100">
         <Container className="text-center">
           <Typography 
             sx={{ color: 'black', fontSize: '0.8rem' }}
@@ -139,6 +138,19 @@ export default function Login() {
           </Typography>
         </Container>
       </footer>
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

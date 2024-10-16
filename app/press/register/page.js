@@ -8,6 +8,8 @@ import { doc, setDoc } from 'firebase/firestore';
 import { AppBar, Toolbar, Avatar, Button, Container, TextField, Typography, CircularProgress, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Register() {
   const [profileImage, setProfileImage] = useState(null);
@@ -20,7 +22,6 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const router = useRouter();
 
@@ -36,15 +37,15 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    toast.error(null);
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     if (!profileImage) {
-      setError("Please upload a profile picture");
+      toast.error("Please upload a profile picture");
       return;
     }
 
@@ -61,7 +62,7 @@ export default function Register() {
         'state_changed',
         null,
         (error) => {
-          setError("Image upload failed");
+          toast.error("Image upload failed");
           setLoading(false);
         },
         async () => {
@@ -79,13 +80,13 @@ export default function Register() {
           });
 
           setLoading(false);
-          alert("Registration Successful!");
+          toast.success("Registration Successful!");
 
           router.push('/press/login');
         }
       );
     } catch (error) {
-      setError("Registration failed. " + error.message);
+      toast.error("Registration failed. " + error.message);
       setLoading(false);
     }
   };
@@ -255,7 +256,6 @@ export default function Register() {
               sx={{ mb: 3 }}
             />
 
-            {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
 
             <Button
               type="submit"
@@ -276,7 +276,8 @@ export default function Register() {
           </form>
         </div>
       </Container>
-      <footer className="py-4 bg-gray-50">
+      <hr />
+      <footer className="py-4 bg-gray-100">
         <Container className="text-center">
           <Typography 
             sx={{ color: 'black', fontSize: '0.8rem' }}
@@ -285,6 +286,19 @@ export default function Register() {
           </Typography>
         </Container>
       </footer>
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
