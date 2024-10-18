@@ -132,6 +132,7 @@ export default function Register() {
           <Typography 
             variant="h5" 
             sx={{ ml: 2, fontWeight: 'bold', color: 'white' }}
+            className='hover:cursor-pointer'
           >
             Print<span style={{ color: '#28a745', backgroundColor: 'white', padding: '2px 8px', borderRadius: '6px', marginLeft: '5px' }}>Hub</span>
           </Typography>
