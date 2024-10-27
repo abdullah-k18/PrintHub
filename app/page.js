@@ -51,13 +51,15 @@ export default function Home() {
                 </Link>
               </>
             )}
-            <Button 
-              variant="contained" 
-              sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
-              className='transition-transform duration-300 ease-in-out hover:scale-105'
-            >
-              Login
-            </Button>
+            <Link href="/login" passHref>
+              <Button 
+                variant="contained" 
+                sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
+                className='transition-transform duration-300 ease-in-out hover:scale-105'
+              >
+                Login
+              </Button>
+            </Link>
           </div>
         </Toolbar>
       </AppBar>
@@ -80,12 +82,14 @@ export default function Home() {
           >
             Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
           </Typography>
-          <Button 
-            variant="contained" 
-            sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
-          >
-            Get Started
-          </Button>
+          <Link href="/signup" paddHref>
+            <Button 
+              variant="contained" 
+              sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
+            >
+              Get Started
+            </Button>
+          </Link>
         </Container>
       </section>
 
@@ -212,7 +216,7 @@ export default function Home() {
             >
               Expand your reach and showcase your products to a broader audience. Start selling with us today.
             </Typography>
-            <Link href="/press" passHref>
+            <Link href="/press/register" passHref>
               <Button 
                 variant="contained" 
                 sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}

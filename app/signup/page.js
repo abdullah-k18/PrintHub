@@ -1,21 +1,19 @@
 "use client";
 
 import { useState } from 'react';
-import { auth, db } from '../../../firebase';
+import { auth, db } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { AppBar, Toolbar, Button, Container, TextField, Typography, CircularProgress, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { AppBar, Toolbar, Button, Container, TextField, Typography, CircularProgress } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function Register() {
-  const [pressName, setPressName] = useState('');
+export default function Signup() {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [ownerNumber, setOwnerNumber] = useState('');
-  const [city, setCity] = useState('');
-  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,7 +22,6 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.error(null);
 
     if (password !== confirmPassword) {
       toast.error("Passwords do not match");
@@ -37,14 +34,12 @@ export default function Register() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, "sellers", user.uid), {
+      await setDoc(doc(db, "buyers", user.uid), {
         uid: user.uid,
-        email: user.email,
-        pressName,
-        ownerNumber,
-        city,
-        address,
-        role: "seller",
+        name: name,
+        phone: phone,
+        email: email,
+        role: "buyer",
       });
 
       setLoading(false);
@@ -56,37 +51,6 @@ export default function Register() {
       setLoading(false);
     }
   };
-
-  const cities = [
-    "Abbottabad", "Adezai", "Ali Bandar", "Amir Chah", "Attock", "Ayubia", "Bahawalpur",
-    "Baden", "Bagh", "Bahawalnagar", "Burewala", "Banda Daud Shah", "Bannu", "Batagram", 
-    "Bazdar", "Bela", "Bellpat", "Bhag", "Bhakkar", "Bhalwal", "Bhimber", "Birote", 
-    "Buner", "Burj", "Chiniot", "Chachro", "Chagai", "Chah Sandan", "Chailianwala", 
-    "Chakdara", "Chakku", "Chakwal", "Chaman", "Charsadda", "Chhatr", "Chichawatni", 
-    "Chitral", "Dadu", "Dera Ghazi Khan", "Dera Ismail Khan", "Dalbandin", "Dargai", 
-    "Darya Khan", "Daska", "Dera Bugti", "Dhana Sar", "Digri", "Dina", "Dinga", 
-    "Diplo", "Diwana", "Dokri", "Drosh", "Duki", "Dushi", "Duzab", "Faisalabad", 
-    "Fateh Jang", "Ghotki", "Gwadar", "Gujranwala", "Gujrat", "Gadra", "Gajar", 
-    "Gandava", "Garhi Khairo", "Garruck", "Ghakhar Mandi", "Ghanian", "Ghauspur", 
-    "Ghazluna", "Girdan", "Gulistan", "Gwash", "Hyderabad", "Hala", "Haripur", 
-    "Hab Chauki", "Hafizabad", "Hameedabad", "Hangu", "Harnai", "Hasilpur", "Haveli Lakha", 
-    "Hinglaj", "Hoshab", "Islamabad", "Islamkot", "Ispikan", "Jacobabad", "Jamshoro", 
-    "Jhang", "Jhelum", "Jamesabad", "Jampur", "Janghar", "Jati", "Jauharabad", 
-    "Jhal", "Jhal Jhao", "Jhatpat", "Jhudo", "Jiwani", "Jungshahi", "Karachi", 
-    "Kotri", "Kalam", "Kalandi", "Kalat", "Kamalia", "Kamararod", "Kamber", 
-    "Kamokey", "Kanak", "Kandi", "Kandiaro", "Kanpur", "Kapip", "Kappar", 
-    "Karak City", "Karodi", "Kashmor", "Kasur", "Katuri", "Keti Bandar", "Khairpur", 
-    "Khanaspur", "Khanewal", "Kharan", "Kharian", "Khokhropur", "Khora", "Khushab", 
-    "Khuzdar", "Kikki", "Klupro", "Kohan", "Kohat", "Kohistan", "Kohlu", 
-    "Korak", "Korangi", "Kot Sarae", "Kotli", "Lahore", "Larkana", "Lahri", 
-    "Lakki Marwat", "Lasbela", "Latamber", "Layyah", "Leiah", "Liari", 
-    "Lodhran", "Loralai", "Lower Dir", "Shadan Lund", "Multan", "Mandi Bahauddin", 
-    "Mansehra", "Mian Chanu", "Mirpur", "Moro", "Mardan", "Mach", "Madyan", 
-    "Malakand", "Mand", "Manguchar", "Mashki Chah", "Maslti", "Mastuj", 
-    "Mastung", "Mathi", "Matiari", "Mehar", "Mekhtar", "Merui", "Mianwali", 
-    "Mianez", "Mirpur Batoro", "Mirpur Khas", "Mirpur Sakro", "Mithi", "Mongora", 
-    "Murgha Kibzai", "Muridke", "Musa Khel Bazar", "Muzaffar Garh"
-  ];
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -103,7 +67,7 @@ export default function Register() {
               >
                 Print<span style={{ color: '#28a745', backgroundColor: 'white', padding: '2px 8px', borderRadius: '6px', marginLeft: '5px' }}>Hub</span>
             </Typography>
-            </Link>
+          </Link>
 
           <div className="flex items-center space-x-4">
             <Link href="/login" passHref>
@@ -129,16 +93,24 @@ export default function Register() {
       >
         <div className="bg-white p-6 rounded-md shadow-lg w-full max-h-[90vh] overflow-y-auto">
           <Typography variant="h4" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold' }}>
-            Register Your Printing Press
+            Register as a Buyer
           </Typography>
 
           <form onSubmit={handleSubmit}>
             <TextField
-              label="Printing Press Name"
+              label="Full Name"
               fullWidth
               required
-              value={pressName}
-              onChange={(e) => setPressName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx={{ mb: 3 }}
+            />
+            <TextField
+              label="Phone Number"
+              fullWidth
+              required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               sx={{ mb: 3 }}
             />
             <TextField
@@ -148,39 +120,6 @@ export default function Register() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-            <TextField
-              label="Owner Number"
-              fullWidth
-              required
-              value={ownerNumber}
-              onChange={(e) => setOwnerNumber(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-
-            <FormControl fullWidth sx={{ mb: 3 }}>
-                <InputLabel id="city-label">City</InputLabel>
-                <Select
-                    labelId="city-label"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    label="City"
-                >
-                    {cities.map((city) => (
-                    <MenuItem key={city} value={city}>
-                        {city}
-                    </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-
-            <TextField
-              label="Address"
-              fullWidth
-              required
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
               sx={{ mb: 3 }}
             />
 
@@ -193,6 +132,7 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               sx={{ mb: 3 }}
             />
+
             <TextField
               label="Confirm Password"
               type="password"

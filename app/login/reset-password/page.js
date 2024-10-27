@@ -2,29 +2,34 @@
 
 import { useState } from 'react';
 import { auth } from '../../../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { AppBar, Toolbar, Button, Container, TextField, Typography, CircularProgress } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function ForgotPassword() {
+  const [resetEmail, setResetEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handlePasswordReset = async (e) => {
     e.preventDefault();
+
+    if (!resetEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      toast.success("Login Successful!");
-      router.push('/press/dashboard');
+      await sendPasswordResetEmail(auth, resetEmail);
+      toast.success("Password reset email sent! Please check your inbox.");
+      router.push('/press/login');
     } catch (error) {
-      toast.error("Login failed. " + error.message);
+      toast.error("Error: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -37,23 +42,20 @@ export default function Login() {
         sx={{ backgroundColor: '#28a745', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}
       >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography 
-            variant="h5" 
-            sx={{ ml: 2, fontWeight: 'bold', color: 'white' }}
-            className='hover:cursor-pointer'
-          >
-            Print<span style={{ color: '#28a745', backgroundColor: 'white', padding: '2px 8px', borderRadius: '6px', marginLeft: '5px' }}>Hub</span>
-          </Typography>
+          <Link href="/" passHref>
+            <Typography 
+              variant="h5" 
+              sx={{ ml: 2, fontWeight: 'bold', color: 'white' }}
+              className='hover:cursor-pointer'
+            >
+              Print<span style={{ color: '#28a745', backgroundColor: 'white', padding: '2px 8px', borderRadius: '6px', marginLeft: '5px' }}>Hub</span>
+            </Typography>
+          </Link>
 
           <div className="flex items-center space-x-4">
-            <Link href="/press" passHref>
-              <Button sx={{ color: 'white', fontWeight: 'bold' }}>
-                Home
-              </Button>
-            </Link>
-            <Link href="/press/register" passHref>
+            <Link href="/login" passHref>
               <Button variant="contained" sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}>
-                Register
+                Login
               </Button>
             </Link>
           </div>
@@ -74,40 +76,23 @@ export default function Login() {
       >
         <div className="bg-white p-6 rounded-md shadow-lg w-full max-h-[90vh] overflow-y-auto">
           <Typography variant="h4" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold' }}>
-            Login
+            Reset Password
           </Typography>
 
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handlePasswordReset}>
             <TextField
-              label="Email"
+              label="Enter your email for password reset"
               type="email"
               fullWidth
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
               sx={{ mb: 3 }}
             />
-            <TextField
-              label="Password"
-              type="password"
-              fullWidth
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              sx={{ mb: 3 }}
-            />
-
-            <Typography variant="body2" sx={{ mb: 2, textAlign: 'right' }}>
-              <Link href="/press/login/reset-password" className='text-blue-600 hover:underline'>
-                Forgot Password?
-              </Link>
-            </Typography>
-
             <Button
               type="submit"
-              variant="contained"
+              variant="outlined"
               fullWidth
-              disabled={loading}
               sx={{
                 mb: 2,
                 backgroundColor: '#28a745',
@@ -116,16 +101,10 @@ export default function Login() {
                 },
                 color: 'white',
               }}
+              disabled={loading}
             >
-              {loading ? <CircularProgress size={24} sx={{ color: '#28a745' }} /> : "Login"}
+              {loading ? <CircularProgress size={24} sx={{ color: '#28a745' }} /> : "Send Reset Email"}
             </Button>
-
-            <Typography>
-              Don&apos;t have an account?{" "}
-              <Link href="/press/register" className='text-blue-600 hover:underline'>
-                Register
-              </Link>
-            </Typography>
           </form>
         </div>
       </Container>

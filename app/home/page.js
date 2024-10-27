@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../../firebase";
+import { auth } from "../../firebase";
 import { CircularProgress } from '@mui/material';
 
-export default function Dashboard() {
+export default function Home() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -37,7 +37,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>home</h1>
     </div>
   );
 }
