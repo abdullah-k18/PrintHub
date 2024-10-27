@@ -68,7 +68,7 @@ export default function Login() {
           </Link>
 
           <div className="flex items-center space-x-4">
-            <Link href="/register" passHref>
+            <Link href="/signup" passHref>
               <Button variant="contained" sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}>
                 Register
               </Button>
@@ -139,7 +139,7 @@ export default function Login() {
 
             <Typography>
               Don&apos;t have an account?{" "}
-              <Link href="/register" className='text-blue-600 hover:underline'>
+              <Link href="/signup" className='text-blue-600 hover:underline'>
                 Register
               </Link>
             </Typography>
