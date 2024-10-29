@@ -129,7 +129,7 @@ export default function Register() {
       >
         <div className="bg-white p-6 rounded-md shadow-lg w-full max-h-[90vh] overflow-y-auto">
           <Typography variant="h4" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold' }}>
-            Register Your Printing Press
+            Register Your Press
           </Typography>
 
           <form onSubmit={handleSubmit}>

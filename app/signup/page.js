@@ -93,7 +93,7 @@ export default function Signup() {
       >
         <div className="bg-white p-6 rounded-md shadow-lg w-full max-h-[90vh] overflow-y-auto">
           <Typography variant="h4" sx={{ mb: 4, textAlign: 'center', fontWeight: 'bold' }}>
-            Register as a Buyer
+            Signup
           </Typography>
 
           <form onSubmit={handleSubmit}>

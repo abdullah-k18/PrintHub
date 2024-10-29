@@ -1,10 +1,41 @@
 "use client";
 
+import { useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 import Link from 'next/link';
 import { AppBar, Toolbar, Button, Container, Typography, useMediaQuery } from '@mui/material';
 
 export default function Home() {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const buyerDoc = await getDoc(doc(db, "buyers", user.uid));
+          const sellerDoc = await getDoc(doc(db, "sellers", user.uid));
+
+          if (buyerDoc.exists()) {
+            router.push("/home");
+          } else if (sellerDoc.exists()) {
+            router.push("/press/dashboard");
+          }
+        } catch (error) {
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        router.push("/");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -82,7 +113,7 @@ export default function Home() {
           >
             Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
           </Typography>
-          <Link href="/signup" paddHref>
+          <Link href="/signup" passHref>
             <Button 
               variant="contained" 
               sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
