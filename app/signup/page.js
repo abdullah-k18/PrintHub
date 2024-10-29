@@ -103,7 +103,21 @@ export default function Signup() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <TextField
               label="Phone Number"
@@ -111,7 +125,21 @@ export default function Signup() {
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <TextField
               label="Email"
@@ -120,7 +148,21 @@ export default function Signup() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
             <TextField
@@ -130,7 +172,21 @@ export default function Signup() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
             <TextField
@@ -140,7 +196,21 @@ export default function Signup() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
             <Button

@@ -102,7 +102,21 @@ export default function Login() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <TextField
               label="Password"
@@ -111,7 +125,21 @@ export default function Login() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
             <Typography variant="body2" sx={{ mb: 2, textAlign: 'right' }}>

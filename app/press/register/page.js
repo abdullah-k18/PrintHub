@@ -139,7 +139,21 @@ export default function Register() {
               required
               value={pressName}
               onChange={(e) => setPressName(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <TextField
               label="Email"
@@ -148,7 +162,21 @@ export default function Register() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <TextField
               label="Owner Number"
@@ -156,11 +184,37 @@ export default function Register() {
               required
               value={ownerNumber}
               onChange={(e) => setOwnerNumber(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
-            <FormControl fullWidth sx={{ mb: 3 }}>
-                <InputLabel id="city-label">City</InputLabel>
+            <FormControl fullWidth 
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}>
+                <InputLabel id="city-label" sx={{
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                }}>City</InputLabel>
                 <Select
                     labelId="city-label"
                     value={city}
@@ -181,7 +235,21 @@ export default function Register() {
               required
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
             <TextField
@@ -191,7 +259,21 @@ export default function Register() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <TextField
               label="Confirm Password"
@@ -200,7 +282,21 @@ export default function Register() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
 
             <Button

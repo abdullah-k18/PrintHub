@@ -87,7 +87,21 @@ export default function ForgotPassword() {
               required
               value={resetEmail}
               onChange={(e) => setResetEmail(e.target.value)}
-              sx={{ mb: 3 }}
+              InputLabelProps={{
+                sx: {
+                  '&.Mui-focused': {
+                    color: 'black',
+                  },
+                },
+              }}
+              sx={{ mb: 3, '& .MuiOutlinedInput-root': {
+                '&:hover fieldset': {
+                  borderColor: 'black',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'black',
+                },
+              }, }}
             />
             <Button
               type="submit"
