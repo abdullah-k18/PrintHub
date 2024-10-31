@@ -108,16 +108,19 @@ export default function Dashboard() {
               alignItems: 'center',
               backgroundColor: 'white',
               borderRadius: '50px',
-              padding: '6px 16px',
+              padding: '3px 6px',
               cursor: 'pointer',
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)'
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+              '&:hover': {
+                transform: 'scale(1.05)',
+              }
             }}
             onClick={handleMenuOpen}
           >
               <Avatar sx={{ bgcolor: '#28a745', color: 'white', marginRight: '8px' }}>
                 {sellerName.charAt(0).toUpperCase()}
               </Avatar>
-              <Typography variant="h5" sx={{ color: '#28a745', textTransform: 'capitalize' }}>{sellerName}</Typography>
+              <Typography variant="h5" sx={{ color: '#28a745', textTransform: 'capitalize', pr: 1 }}>{sellerName}</Typography>
             </Box>
             <Menu
               anchorEl={anchorEl}
