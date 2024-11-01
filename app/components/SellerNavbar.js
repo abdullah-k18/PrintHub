@@ -9,7 +9,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Boxes } from "lucide-react";
 import Link from "next/link";
 
-export default function SellerNavbar({ sellerName }) {
+export default function SellerNavbar({ pressName }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const router = useRouter();
@@ -61,16 +61,16 @@ export default function SellerNavbar({ sellerName }) {
           <div>
             <IconButton onClick={handleMenuOpen}>
               <Avatar sx={{ bgcolor: 'white', color: '#28a745', fontWeight: 'bold' }}>
-                {sellerName.charAt(0).toUpperCase()}
+                {pressName.charAt(0).toUpperCase()}
               </Avatar>
             </IconButton>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
               <Link href="/press/profile" passHref>
                 <MenuItem>
                   <Avatar sx={{ bgcolor: '#28a745', color: 'white', marginRight: '8px', fontWeight: 'bold' }}>
-                    {sellerName.charAt(0).toUpperCase()}
+                    {pressName.charAt(0).toUpperCase()}
                   </Avatar>
-                  <Typography sx={{ color: '#28a745', textTransform: 'capitalize', fontWeight: 'bold' }}>{sellerName}</Typography>
+                  <Typography sx={{ color: '#28a745', textTransform: 'capitalize', fontWeight: 'bold' }}>{pressName}</Typography>
                 </MenuItem>
               </Link>
               <Link href="/press/dashboard" passHref>

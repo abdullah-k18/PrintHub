@@ -6,11 +6,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../../firebase";
 import { CircularProgress } from '@mui/material';
 import { doc, getDoc } from "firebase/firestore";
-import SellerNavbar from "../../components/sellerNavbar";
+import SellerNavbar from "@/app/components/SellerNavbar";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
-  const [sellerName, setSellerName] = useState("");
+  const [pressName, setPressName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function Dashboard() {
         try {
           const sellerDoc = await getDoc(doc(db, "sellers", user.uid));
           if (sellerDoc.exists() && sellerDoc.data().role === "seller") {
-            setSellerName(sellerDoc.data().pressName);
+            setPressName(sellerDoc.data().pressName);
             setLoading(false);
           } else {
             router.push("/login");
@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      <SellerNavbar sellerName={sellerName} />
+      <SellerNavbar pressName={pressName} />
     </div>
   );
 }
