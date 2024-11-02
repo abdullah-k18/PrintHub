@@ -6,7 +6,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebase";
 import SellerNavbar from "@/app/components/SellerNavbar";
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function Inventory() {
     const [loading, setLoading] = useState(true);
@@ -52,6 +53,22 @@ export default function Inventory() {
             <div className="pt-[80px] pl-4">
                 <h1>Inventory Page</h1>
             </div>
+
+            <Fab
+                color="primary"
+                aria-label="add"
+                sx={{
+                    position: 'fixed',
+                    bottom: 50,
+                    right: 50,
+                    backgroundColor: '#28a745',
+                    '&:hover': {
+                        backgroundColor: '#218838',
+                    }
+                }}
+            >
+                <AddIcon />
+            </Fab>
         </div>
     );
 }
