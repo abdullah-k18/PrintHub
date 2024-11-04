@@ -8,17 +8,21 @@ import { auth, db } from "../../../firebase";
 import SellerNavbar from "@/app/components/SellerNavbar";
 import { CircularProgress, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import AddProductDialog from "@/app/components/AddProductDialog";
 
 export default function Inventory() {
     const [loading, setLoading] = useState(true);
     const [pressName, setPressName] = useState(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [user, setUser] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
                 try {
-                    const sellerDoc = await getDoc(doc(db, "sellers", user.uid));
+                    const sellerDoc = await getDoc(doc(db, "sellers", currentUser.uid));
 
                     if (sellerDoc.exists() && sellerDoc.data().role === "seller") {
                         const sellerData = sellerDoc.data();
@@ -39,6 +43,19 @@ export default function Inventory() {
         return () => unsubscribe();
     }, [router]);
 
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
+    const handleAddItem = () => {
+        console.log("Item added");
+        setDialogOpen(false);
+    };
+
     if (loading) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -57,6 +74,7 @@ export default function Inventory() {
             <Fab
                 color="primary"
                 aria-label="add"
+                onClick={handleDialogOpen}
                 sx={{
                     position: 'fixed',
                     bottom: 50,
@@ -69,6 +87,15 @@ export default function Inventory() {
             >
                 <AddIcon />
             </Fab>
+
+            {user && (
+                <AddProductDialog
+                    open={dialogOpen}
+                    onClose={handleDialogClose}
+                    onAdd={handleAddItem}
+                    uid={user.uid}
+                />
+            )}
         </div>
     );
 }

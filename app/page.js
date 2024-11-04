@@ -124,7 +124,7 @@ export default function Home() {
         </Container>
       </section>
 
-      <section id="features" className="flex items-center justify-center h-screen py-16  bg-gray-100">
+      <section id="features" className="flex items-center justify-center h-screen sm:h-auto py-16  bg-gray-100">
         <Container>
           <Typography 
             variant="h3" 
