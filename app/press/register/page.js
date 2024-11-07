@@ -201,7 +201,7 @@ export default function Register() {
               }, }}
             />
 
-            <FormControl fullWidth 
+            <FormControl fullWidth required
               sx={{ mb: 3, '& .MuiOutlinedInput-root': {
                 '&:hover fieldset': {
                   borderColor: 'black',
