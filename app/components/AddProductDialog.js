@@ -64,10 +64,17 @@ export default function AddProductDialog({ open, onClose, onAdd, uid }) {
   };
 
   const handleAddProduct = async () => {
-    if (category === "") {
-        toast.error("Please select a category before adding the product.");
-        return;
-      }
+    if (
+      !productName ||
+      !productDescription ||
+      !inventoryQuantity ||
+      !minimumPrintingQuantity ||
+      !category ||
+      !productPrice
+    ) {
+      toast.error("Please fill in all the required fields.");
+      return;
+    }
 
     if (images.length === 0) {
       toast.error(

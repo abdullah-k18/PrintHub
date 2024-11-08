@@ -121,10 +121,10 @@ export default function SellerNavbar({ pressName }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleClose} color="success">
+          <Button onClick={handleClose} color="success">
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleConfirmLogout} color="error" autoFocus>
+          <Button onClick={handleConfirmLogout} color="error" autoFocus>
             Yes
           </Button>
         </DialogActions>

@@ -120,7 +120,7 @@ export default function Inventory() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <SellerNavbar pressName={pressName} />
-      <div className="pt-[80px] pl-4 pr-4">
+      <div className="pt-[80px] pl-4 pr-4 pb-[40px]">
         <TableContainer component={Paper} sx={{ mt: 3 }}>
           <Table>
             <TableHead>
