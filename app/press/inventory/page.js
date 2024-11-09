@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { auth, db } from "../../../firebase";
+import { doc, getDoc, collection, query, where, onSnapshot, deleteDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import { auth, db, storage } from "../../../firebase";
 import SellerNavbar from "@/app/components/SellerNavbar";
 import {
   CircularProgress,
@@ -24,6 +25,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddProductDialog from "@/app/components/AddProductDialog";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import DeleteProductDialog from "@/app/components/DeleteProductDialog";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Inventory() {
   const [loading, setLoading] = useState(true);
@@ -32,6 +36,8 @@ export default function Inventory() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [imageIndex, setImageIndex] = useState({});
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,22 +46,25 @@ export default function Inventory() {
         setUser(currentUser);
         try {
           const sellerDoc = await getDoc(doc(db, "sellers", currentUser.uid));
-
+  
           if (sellerDoc.exists() && sellerDoc.data().role === "seller") {
             const sellerData = sellerDoc.data();
             setPressName(sellerData.pressName);
             setLoading(false);
-
+  
             const q = query(
               collection(db, "products"),
               where("uid", "==", currentUser.uid)
             );
-            const querySnapshot = await getDocs(q);
-            const productsData = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }));
-            setProducts(productsData);
+            const unsubscribeProducts = onSnapshot(q, (querySnapshot) => {
+              const productsData = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              setProducts(productsData);
+            });
+  
+            return () => unsubscribeProducts();
           } else {
             router.push("/login");
           }
@@ -67,9 +76,10 @@ export default function Inventory() {
         router.push("/login");
       }
     });
-
+  
     return () => unsubscribe();
   }, [router]);
+  
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -101,6 +111,42 @@ export default function Inventory() {
   const handleClickImage = (imageUrl) => {
     window.open(imageUrl, "_blank");
   };
+
+  const handleDeleteClick = (productId) => {
+    setSelectedProduct(productId);
+    setDeleteDialogOpen(true);
+  };
+  
+  const handleDeleteClose = () => {
+    setDeleteDialogOpen(false);
+    setSelectedProduct(null);
+  };
+  
+  const handleDeleteConfirm = async () => {
+    if (selectedProduct) {
+      try {
+        const productToDelete = products.find((product) => product.id === selectedProduct);
+        
+        if (productToDelete && productToDelete.images && productToDelete.images.length > 0) {
+          const deletePromises = productToDelete.images.map((imageUrl) => {
+            const imageRef = ref(storage, imageUrl);
+            return deleteObject(imageRef);
+          });
+  
+          await Promise.all(deletePromises);
+        }
+  
+        await deleteDoc(doc(db, "products", selectedProduct));
+        toast.success('Product removed successfully from the inventory!');
+        setDeleteDialogOpen(false);
+        setSelectedProduct(null);
+      } catch (error) {
+        toast.error('Failed to remove the product from inventory. Please try again.');
+        console.error("Error deleting product and images: ", error);
+      }
+    }
+  };
+  
 
   if (loading) {
     return (
@@ -183,7 +229,7 @@ export default function Inventory() {
                       <IconButton>
                         <EditIcon sx={{ color: "green" }} />
                       </IconButton>
-                      <IconButton>
+                      <IconButton onClick={() => handleDeleteClick(product.id)}>
                         <DeleteIcon sx={{ color: "red" }} />
                       </IconButton>
                     </TableCell>
@@ -220,6 +266,12 @@ export default function Inventory() {
           uid={user.uid}
         />
       )}
+
+      <DeleteProductDialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteClose}
+        onDelete={handleDeleteConfirm}
+      />
     </div>
   );
 }
