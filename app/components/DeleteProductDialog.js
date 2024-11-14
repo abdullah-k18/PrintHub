@@ -10,10 +10,10 @@ export default function DeleteProductDialog({ open, onClose, onDelete }) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="success">
+        <Button onClick={onClose} color="success" sx={{ fontWeight: 'bold' }}>
           Cancel
         </Button>
-        <Button onClick={onDelete} color="error">
+        <Button onClick={onDelete} color="error" sx={{ fontWeight: 'bold' }}>
           Yes
         </Button>
       </DialogActions>

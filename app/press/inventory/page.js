@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, collection, query, where, onSnapshot, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+  deleteDoc,
+} from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { auth, db, storage } from "../../../firebase";
 import SellerNavbar from "@/app/components/SellerNavbar";
@@ -26,6 +34,7 @@ import AddProductDialog from "@/app/components/AddProductDialog";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import DeleteProductDialog from "@/app/components/DeleteProductDialog";
+import EditProductDialog from "@/app/components/EditProductDialog";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -38,6 +47,8 @@ export default function Inventory() {
   const [imageIndex, setImageIndex] = useState({});
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedProductForEdit, setSelectedProductForEdit] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -46,12 +57,12 @@ export default function Inventory() {
         setUser(currentUser);
         try {
           const sellerDoc = await getDoc(doc(db, "sellers", currentUser.uid));
-  
+
           if (sellerDoc.exists() && sellerDoc.data().role === "seller") {
             const sellerData = sellerDoc.data();
             setPressName(sellerData.pressName);
             setLoading(false);
-  
+
             const q = query(
               collection(db, "products"),
               where("uid", "==", currentUser.uid)
@@ -63,7 +74,7 @@ export default function Inventory() {
               }));
               setProducts(productsData);
             });
-  
+
             return () => unsubscribeProducts();
           } else {
             router.push("/login");
@@ -76,10 +87,9 @@ export default function Inventory() {
         router.push("/login");
       }
     });
-  
+
     return () => unsubscribe();
   }, [router]);
-  
 
   const handleDialogOpen = () => {
     setDialogOpen(true);
@@ -116,37 +126,54 @@ export default function Inventory() {
     setSelectedProduct(productId);
     setDeleteDialogOpen(true);
   };
-  
+
   const handleDeleteClose = () => {
     setDeleteDialogOpen(false);
     setSelectedProduct(null);
   };
-  
+
   const handleDeleteConfirm = async () => {
     if (selectedProduct) {
       try {
-        const productToDelete = products.find((product) => product.id === selectedProduct);
-        
-        if (productToDelete && productToDelete.images && productToDelete.images.length > 0) {
+        const productToDelete = products.find(
+          (product) => product.id === selectedProduct
+        );
+
+        if (
+          productToDelete &&
+          productToDelete.images &&
+          productToDelete.images.length > 0
+        ) {
           const deletePromises = productToDelete.images.map((imageUrl) => {
             const imageRef = ref(storage, imageUrl);
             return deleteObject(imageRef);
           });
-  
+
           await Promise.all(deletePromises);
         }
-  
+
         await deleteDoc(doc(db, "products", selectedProduct));
-        toast.success('Product removed successfully from the inventory!');
+        toast.success("Product removed successfully from the inventory!");
         setDeleteDialogOpen(false);
         setSelectedProduct(null);
       } catch (error) {
-        toast.error('Failed to remove the product from inventory. Please try again.');
+        toast.error(
+          "Failed to remove the product from inventory. Please try again."
+        );
         console.error("Error deleting product and images: ", error);
       }
     }
   };
-  
+
+  const handleEditClick = (product) => {
+    setSelectedProductForEdit(product);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditDialogClose = () => {
+    setEditDialogOpen(false);
+    setSelectedProductForEdit(null);
+  };
 
   if (loading) {
     return (
@@ -171,14 +198,85 @@ export default function Inventory() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Product Images</TableCell>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Product Name</TableCell>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Description</TableCell>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Quantity</TableCell>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Min Printing Quantity</TableCell>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Category</TableCell>
-                <TableCell sx={{ borderRight: "1px solid #ccc", fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Price</TableCell>
-                <TableCell sx={{ fontWeight: "bolder", fontSize: "16px", textAlign: "center" }}>Actions</TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Product Images
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Product Name
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Description
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Quantity
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Min Printing Quantity
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Category
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "1px solid #ccc",
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Price
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bolder",
+                    fontSize: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -191,11 +289,21 @@ export default function Inventory() {
               ) : (
                 products.map((product) => (
                   <TableRow key={product.id}>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <div style={{ display: "flex", alignItems: "center" }}>
                         {product.images && product.images.length > 1 && (
                           <IconButton
-                            onClick={() => handlePrevImage(product.id, product.images.length)}
+                            onClick={() =>
+                              handlePrevImage(product.id, product.images.length)
+                            }
                           >
                             <ArrowBackIosIcon />
                           </IconButton>
@@ -204,29 +312,82 @@ export default function Inventory() {
                           <img
                             src={product.images[imageIndex[product.id] || 0]}
                             alt={product.productName}
-                            style={{ width: 50, height: 50, borderRadius: 4, cursor: "pointer" }}
-                            onClick={() => handleClickImage(product.images[imageIndex[product.id] || 0])}
+                            style={{
+                              width: 50,
+                              height: 50,
+                              borderRadius: 4,
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              handleClickImage(
+                                product.images[imageIndex[product.id] || 0]
+                              )
+                            }
                           />
                         ) : (
                           "No Image"
                         )}
                         {product.images && product.images.length > 1 && (
                           <IconButton
-                            onClick={() => handleNextImage(product.id, product.images.length)}
+                            onClick={() =>
+                              handleNextImage(product.id, product.images.length)
+                            }
                           >
                             <ArrowForwardIosIcon />
                           </IconButton>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center" }}>{product.productName}</TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center" }}>{product.productDescription}</TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center" }}>{product.inventoryQuantity}</TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center" }}>{product.minimumPrintingQuantity}</TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center" }}>{product.category}</TableCell>
-                    <TableCell sx={{ borderRight: "1px solid #ccc", textAlign: "center" }}>{`${product.productPrice} RS/item`}</TableCell>
-                    <TableCell sx={{ textAlign: "center", verticalAlign: "middle" }}>
-                      <IconButton>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                      }}
+                    >
+                      {product.productName}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                      }}
+                    >
+                      {product.productDescription}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                      }}
+                    >
+                      {product.inventoryQuantity}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                      }}
+                    >
+                      {product.minimumPrintingQuantity}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                      }}
+                    >
+                      {product.category}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: "1px solid #ccc",
+                        textAlign: "center",
+                      }}
+                    >{`${product.productPrice} RS / item`}</TableCell>
+                    <TableCell
+                      sx={{ textAlign: "center", verticalAlign: "middle" }}
+                    >
+                      <IconButton onClick={() => handleEditClick(product)}>
                         <EditIcon sx={{ color: "green" }} />
                       </IconButton>
                       <IconButton onClick={() => handleDeleteClick(product.id)}>
@@ -271,6 +432,15 @@ export default function Inventory() {
         open={deleteDialogOpen}
         onClose={handleDeleteClose}
         onDelete={handleDeleteConfirm}
+      />
+
+      <EditProductDialog
+        open={editDialogOpen}
+        onClose={handleEditDialogClose}
+        product={selectedProductForEdit}
+        onSave={() => {
+          setEditDialogOpen(false);
+        }}
       />
     </div>
   );

@@ -121,10 +121,10 @@ export default function SellerNavbar({ pressName }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="success">
+          <Button onClick={handleClose} color="success" sx={{ fontWeight: 'bold' }}>
             Cancel
           </Button>
-          <Button onClick={handleConfirmLogout} color="error" autoFocus>
+          <Button onClick={handleConfirmLogout} color="error" autoFocus sx={{ fontWeight: 'bold' }}>
             Yes
           </Button>
         </DialogActions>
