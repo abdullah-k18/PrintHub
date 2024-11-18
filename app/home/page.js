@@ -6,9 +6,11 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { CircularProgress } from '@mui/material';
+import BuyerNavbar from "../components/BuyerNavbar";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [name, setName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export default function Home() {
           const sellerDoc = await getDoc(doc(db, "sellers", user.uid));
 
           if (buyerDoc.exists() && buyerDoc.data().role === "buyer") {
+            setName(buyerDoc.data().name);
             setLoading(false);
           } else if (sellerDoc.exists() && sellerDoc.data().role === "seller") {
             router.push("/login");
@@ -51,8 +54,8 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="bg-gray-100 min-h-screen">
+      <BuyerNavbar name={name} />
     </div>
   );
 }
