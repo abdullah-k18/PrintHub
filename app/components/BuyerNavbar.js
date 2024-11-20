@@ -47,7 +47,7 @@ export default function BuyerNavbar({ name }) {
       >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <div className="flex items-center">
-            <Link href="/press/dashboard" passHref>
+            <Link href="/home" passHref>
               <Typography variant="h5" sx={{ ml: 2, fontWeight: 'bold', color: 'white' }}>
                 Print
                 <span style={{ color: '#28a745', backgroundColor: 'white', padding: '2px 8px', borderRadius: '6px', marginLeft: '5px' }}>

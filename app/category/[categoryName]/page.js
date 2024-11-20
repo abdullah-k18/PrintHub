@@ -1,5 +1,4 @@
 export default function CategoryPage({ params }) {
-    console.log("Params:", params);
     const { categoryName } = params;
   
     return (
