@@ -132,16 +132,16 @@ export default function Home() {
         </Swiper>
       </div>
 
-      <div className="mt-8 p-4">
+      <div className="mt-8 p-4 mb-4">
         <h2 className="text-xl font-bold text-center mb-4">Explore Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categories.map((category, index) => (
             <Link
               key={index}
-              href={`/category/${encodeURIComponent(category.name.replace(/\s+/g, "-").toLowerCase())}`}
+              href={`/category/${encodeURIComponent(category.name.replace(/\//g, "and").replace(/\s+/g, "-").toLowerCase())}`}
             >
               <div
-                className="flex flex-col items-center p-4 bg-white shadow-md rounded-lg hover:shadow-lg transform hover:scale-105 transition-all cursor-pointer"
+                className="flex flex-col items-center p-2 lg:p-4 bg-white shadow-md rounded-lg hover:shadow-lg transform hover:scale-105 transition-all cursor-pointer"
               >
                 <img
                   src={category.image}

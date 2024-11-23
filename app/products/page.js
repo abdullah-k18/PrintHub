@@ -2,63 +2,38 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc } from "firebase/firestore";
+import { db, auth } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../../../firebase";
 import { Card, CardContent, Typography, Grid, Box, CircularProgress } from "@mui/material";
 import BuyerNavbar from "@/app/components/BuyerNavbar";
-import Footer from "@/app/components/Footer";
+import Footer from "../components/Footer";
 
-export default function PressPage({ params }) {
-  const { pressName } = params;
+export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [authLoading, setAuthLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [error, setError] = useState(false);
   const [name, setName] = useState("");
   const router = useRouter();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchAllProducts = async () => {
       try {
-        const sellersQuery = query(
-          collection(db, "sellers"),
-          where("pressName", "==", pressName.replace(/-/g, " "))
-        );
-        const sellerSnapshot = await getDocs(sellersQuery);
-
-        if (sellerSnapshot.empty) {
-          console.error(`No seller found for press name: ${pressName}`);
-          setError(true);
-          return;
-        }
-
-        const sellerData = sellerSnapshot.docs[0].data();
-        const sellerUID = sellerSnapshot.docs[0].id;
-
-        const productsQuery = query(
-          collection(db, "products"),
-          where("uid", "==", sellerUID)
-        );
-        const productsSnapshot = await getDocs(productsQuery);
-
-        const productsData = productsSnapshot.docs.map((doc) => ({
+        const querySnapshot = await getDocs(collection(db, "products"));
+        const productsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-
         setProducts(productsData);
       } catch (error) {
-        console.error("Error fetching products:", error);
-        setError(true);
+        console.error("Error fetching all products:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, [pressName]);
+    fetchAllProducts();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -66,7 +41,7 @@ export default function PressPage({ params }) {
         try {
           const buyerDocRef = doc(db, "buyers", user.uid);
           const buyerDoc = await getDoc(buyerDocRef);
-  
+
           if (buyerDoc.exists()) {
             setName(buyerDoc.data().name);
           } else {
@@ -76,42 +51,21 @@ export default function PressPage({ params }) {
         } catch (error) {
           console.error("Error fetching user data:", error);
           router.push("/login");
-        } finally {
-          setAuthLoading(false);
         }
       } else {
-        console.warn("User is not logged in.");
+        console.warn("User is not authenticated.");
         router.push("/login");
-        setAuthLoading(false);
       }
     });
-  
+
     return () => unsubscribe();
   }, [router]);
-  
+
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <CircularProgress size={50} sx={{ color: "#28a745" }} />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Typography variant="h6" color="error">
-          Unable to load products for {pressName.replace(/-/g, " ")}. Please try again later.
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (authLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <CircularProgress size={50} sx={{ color: "#28a745" }} />
@@ -128,11 +82,6 @@ export default function PressPage({ params }) {
           type="text"
           placeholder="Search by product name"
           className="w-3/4 sm:w-1/2 px-4 py-2 rounded-lg shadow-md"
-          sx={{
-            '&:focus': {
-              outline: '2px solid black',
-            },
-          }}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -143,12 +92,12 @@ export default function PressPage({ params }) {
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
               <Card className="hover:shadow-xl w-60 mx-auto">
-              <div className="flex justify-center items-center h-40 rounded-t-md">
-                <img
-                  src={product.images[0]}
-                  alt={product.productName}
-                  className="h-40 place-items-center object-cover rounded-t-md"
-                />
+                <div className="flex justify-center items-center h-40 rounded-t-md">
+                  <img
+                    src={product.images[0]}
+                    alt={product.productName}
+                    className="h-40 place-items-center object-cover rounded-t-md"
+                  />
                 </div>
                 <CardContent>
                   <Typography variant="h6" fontWeight="bold">
@@ -167,16 +116,7 @@ export default function PressPage({ params }) {
               className="w-full text-center text-gray-500"
               sx={{ marginTop: 4 }}
             >
-              No products found.
-            </Typography>
-          )}
-          {products.length === 0 && (
-            <Typography
-              variant="body1"
-              className="w-full text-center text-gray-500"
-              sx={{ marginTop: 4 }}
-            >
-              No products found.
+              No products found matching your search.
             </Typography>
           )}
         </Grid>

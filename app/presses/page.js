@@ -93,7 +93,12 @@ export default function PrintingPresses() {
           placeholder="Search by name, address, or city"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-3/4 sm:w-1/2 px-4 py-2 border rounded-lg shadow-md focus:outline-black"
+          className="w-3/4 sm:w-1/2 px-4 py-2 rounded-lg shadow-md"
+          sx={{
+            '&:focus': {
+              outline: '2px solid black',
+            },
+          }}
         />
       </div>
 
@@ -123,7 +128,17 @@ export default function PrintingPresses() {
           {filteredPresses.length === 0 && (
             <Typography
               variant="body1"
-              className="w-full text-center mt-4 text-gray-500"
+              className="w-full text-center text-gray-500"
+              sx={{ marginTop: 4 }}
+            >
+              No printing presses found.
+            </Typography>
+          )}
+          {presses.length === 0 && (
+            <Typography
+              variant="body1"
+              className="w-full text-center text-gray-500"
+              sx={{ marginTop: 4 }}
             >
               No printing presses found.
             </Typography>
