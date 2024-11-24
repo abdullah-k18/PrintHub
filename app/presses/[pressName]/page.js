@@ -170,15 +170,6 @@ export default function PressPage({ params }) {
               No products found.
             </Typography>
           )}
-          {products.length === 0 && (
-            <Typography
-              variant="body1"
-              className="w-full text-center text-gray-500"
-              sx={{ marginTop: 4 }}
-            >
-              No products found.
-            </Typography>
-          )}
         </Grid>
       </div>
 

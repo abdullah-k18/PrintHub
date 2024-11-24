@@ -109,7 +109,7 @@ export default function PrintingPresses() {
               <Card
                 sx={{ textAlign: "center" }}
                 className="cursor-pointer hover:shadow-xl"
-                onClick={() => router.push(`/presses/${press.pressName.replace(/\s+/g, "-").toLowerCase()}`)}
+                onClick={() => router.push(`/presses/${press.pressName.replace(/\s+/g, "-")}`)}
               >
                 <div className="bg-green-600 p-4 rounded-t-md">
                   <StorefrontIcon sx={{ fontSize: 40, color: "white" }} />
@@ -126,15 +126,6 @@ export default function PrintingPresses() {
             </Grid>
           ))}
           {filteredPresses.length === 0 && (
-            <Typography
-              variant="body1"
-              className="w-full text-center text-gray-500"
-              sx={{ marginTop: 4 }}
-            >
-              No printing presses found.
-            </Typography>
-          )}
-          {presses.length === 0 && (
             <Typography
               variant="body1"
               className="w-full text-center text-gray-500"
