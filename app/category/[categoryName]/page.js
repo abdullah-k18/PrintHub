@@ -11,6 +11,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db, auth } from "../../../firebase";
+import Link from "next/link";
 import { onAuthStateChanged } from "firebase/auth";
 import {
   Card,
@@ -140,10 +141,7 @@ export default function CategoryPage({ params }) {
           <Grid container spacing={3}>
             {filteredProducts.map((product) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                <div
-                  onClick={() => router.push(`/products/${product.id}`)}
-                  className="cursor-pointer"
-                >
+                <Link href={`/products/${product.id}`}>
                   <Card className="hover:shadow-xl w-60 mx-auto">
                     <div className="flex justify-center items-center h-40 rounded-t-md">
                       <img
@@ -161,7 +159,7 @@ export default function CategoryPage({ params }) {
                       </Typography>
                     </CardContent>
                   </Card>
-                </div>
+                </Link>
               </Grid>
             ))}
             {filteredProducts.length === 0 && (

@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../../firebase";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -172,10 +173,7 @@ export default function PressPage({ params }) {
         <Grid container spacing={3}>
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <div
-                onClick={() => router.push(`/products/${product.id}`)}
-                className="cursor-pointer"
-              >
+              <Link href={`/products/${product.id}`}>
                 <Card className="hover:shadow-xl w-60 mx-auto">
                   <div className="flex justify-center items-center h-40 rounded-t-md">
                     <img
@@ -193,7 +191,7 @@ export default function PressPage({ params }) {
                     </Typography>
                   </CardContent>
                 </Card>
-              </div>
+              </Link>
             </Grid>
           ))}
           {filteredProducts.length === 0 && (
