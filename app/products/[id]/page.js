@@ -173,7 +173,7 @@ export default function ProductDetailsPage() {
                   key={index}
                   className={`cursor-pointer border-2 rounded-md ${
                     activeImage === image
-                      ? "border-green-500"
+                      ? "border-green-600"
                       : "border-gray-300"
                   }`}
                   onClick={() => setActiveImage(image)}
