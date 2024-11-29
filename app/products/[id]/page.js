@@ -197,7 +197,7 @@ export default function ProductDetailsPage() {
             </Typography>
 
             <Box>
-              <Typography variant="body1" fontWeight="bold">
+              <Typography variant="body1" fontWeight="semibold">
                 Press:{" "}
                 <Link href={`/presses/${pressName.replace(/\s+/g, "-")}`}>
                   <Typography
@@ -218,7 +218,7 @@ export default function ProductDetailsPage() {
               </Typography>
             </Box>
 
-            <Typography variant="h5">
+            <Typography variant="h5" fontWeight="semibold">
               Rs. {product.productPrice * quantity}
             </Typography>
 
