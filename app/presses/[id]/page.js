@@ -25,7 +25,7 @@ import BuyerNavbar from "@/app/components/BuyerNavbar";
 import Footer from "@/app/components/Footer";
 
 export default function PressPage({ params }) {
-  const { pressName } = params;
+  const { id } = params; // Updated to use id from params
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(true);
@@ -37,21 +37,18 @@ export default function PressPage({ params }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const sellersQuery = query(
-          collection(db, "sellers"),
-          where("pressName", "==", pressName.replace(/-/g, " "))
-        );
-        const sellerSnapshot = await getDocs(sellersQuery);
+        // Directly query for the seller using the id
+        const sellerDocRef = doc(db, "sellers", id);
+        const sellerDoc = await getDoc(sellerDocRef);
 
-        if (sellerSnapshot.empty) {
-          console.error(`No seller found for press name: ${pressName}`);
+        if (!sellerDoc.exists()) {
+          console.error(`No seller found for id: ${id}`);
           setError(true);
           return;
         }
 
-        const sellerData = sellerSnapshot.docs[0].data();
-        const sellerUID = sellerSnapshot.docs[0].id;
-
+        // Fetch products based on the seller's UID
+        const sellerUID = sellerDoc.id;
         const productsQuery = query(
           collection(db, "products"),
           where("uid", "==", sellerUID)
@@ -73,7 +70,7 @@ export default function PressPage({ params }) {
     };
 
     fetchProducts();
-  }, [pressName]);
+  }, [id]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -130,8 +127,8 @@ export default function PressPage({ params }) {
         height="100vh"
       >
         <Typography variant="h6" color="error">
-          Unable to load products for {pressName.replace(/-/g, " ")}. Please try
-          again later.
+          Unable to load products for the selected press. Please try again
+          later.
         </Typography>
       </Box>
     );

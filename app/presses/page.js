@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -106,10 +107,10 @@ export default function PrintingPresses() {
         <Grid container spacing={3}>
           {filteredPresses.map((press) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={press.id}>
+              <Link href={`/presses/${press.id}`}>
               <Card
                 sx={{ textAlign: "center" }}
                 className="cursor-pointer hover:shadow-xl"
-                onClick={() => router.push(`/presses/${press.pressName.replace(/\s+/g, "-")}`)}
               >
                 <div className="bg-green-600 p-4 rounded-t-md">
                   <StorefrontIcon sx={{ fontSize: 40, color: "white" }} />
@@ -123,6 +124,7 @@ export default function PrintingPresses() {
                   </Typography>
                 </CardContent>
               </Card>
+              </Link>
             </Grid>
           ))}
           {filteredPresses.length === 0 && (

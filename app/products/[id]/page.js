@@ -27,6 +27,7 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState(null);
   const [name, setName] = useState("");
   const [pressName, setPressName] = useState("");
+  const [pressId, setPressId] = useState("");
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(0);
   const [activeImage, setActiveImage] = useState("");
@@ -48,7 +49,9 @@ export default function ProductDetailsPage() {
           const sellerDoc = await getDoc(sellerDocRef);
 
           if (sellerDoc.exists()) {
+            const sellerData = sellerDoc.data();
             setPressName(sellerDoc.data().pressName);
+            setPressId(sellerDoc.id);
           } else {
             console.warn("Seller not found.");
           }
@@ -199,7 +202,7 @@ export default function ProductDetailsPage() {
             <Box>
               <Typography variant="body1" fontWeight="semibold">
                 Press:{" "}
-                <Link href={`/presses/${pressName.replace(/\s+/g, "-")}`}>
+                <Link href={`/presses/${pressId}`}>
                   <Typography
                     variant="text"
                     sx={{
