@@ -80,7 +80,7 @@ export default function BuyerNavbar({ name }) {
                   <Typography>Home</Typography>
                 </MenuItem>
               </Link>
-              <Link href="/user/cart" passHref>
+              <Link href="/cart" passHref>
                 <MenuItem onClick={handleMenuClose}>
                   <ListItemIcon>
                     <ShoppingCart fontSize="small" style={{ color: 'black' }} />

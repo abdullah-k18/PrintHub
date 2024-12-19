@@ -172,7 +172,7 @@ export default function ProductDetailsPage() {
     if (quantity < product.minimumPrintingQuantity || !quantity) {
       toast.error(
         `Minimum quantity required is ${product.minimumPrintingQuantity}.`,
-        { position: "top-center" }
+        { position: "bottom-right" }
       );
       setQuantity(product.minimumPrintingQuantity);
     }
@@ -182,7 +182,7 @@ export default function ProductDetailsPage() {
     if (!quantity || quantity < product.minimumPrintingQuantity) {
       toast.error(
         `Please select a quantity greater than or equal to ${product.minimumPrintingQuantity}.`,
-        { position: "top-center" }
+        { position: "bottom-right" }
       );
       return;
     }
@@ -199,7 +199,7 @@ export default function ProductDetailsPage() {
     const totalPrice = product.productPrice * quantity;
 
     try {
-      const cartDocRef = doc(db, "carts", user.uid);
+      const cartDocRef = doc(db, "cart", user.uid);
       const cartDoc = await getDoc(cartDocRef);
 
       const productData = {
@@ -228,6 +228,7 @@ export default function ProductDetailsPage() {
 
       setImages([]);
       setInstructions("");
+      router.push("/cart");
     } catch (error) {
       console.error("Error adding to cart:", error);
       toast.error("Failed to add product to cart. Please try again.", {
