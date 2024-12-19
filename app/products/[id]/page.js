@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db, auth } from "../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -16,10 +16,20 @@ import {
   IconButton,
 } from "@mui/material";
 import { Close, Visibility } from "@mui/icons-material";
+import { Textarea } from "@mui/joy";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BuyerNavbar from "@/app/components/BuyerNavbar";
 import Footer from "@/app/components/Footer";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { storage } from "../../../firebase";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -30,8 +40,56 @@ export default function ProductDetailsPage() {
   const [pressId, setPressId] = useState("");
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(0);
+  const [instructions, setInstructions] = useState("");
   const [activeImage, setActiveImage] = useState("");
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [images, setImages] = useState([]);
+
+  const uploadDesignImage = async (file) => {
+    const uniqueFileName = `design-${Date.now()}-${file.name}`;
+    const storageRef = ref(storage, `design/${uniqueFileName}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => reject(error),
+        async () => {
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(url);
+        }
+      );
+    });
+  };
+
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    try {
+      const uploadedUrls = await Promise.all(
+        files.map((file) => uploadDesignImage(file))
+      );
+      setImages((prevImages) => [...prevImages, ...uploadedUrls]);
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      toast.error("Failed to upload design images. Please try again.");
+    }
+  };
+
+  const handleImageDelete = async (index) => {
+    try {
+      const imageToDelete = images[index];
+
+      const storageRef = ref(storage, imageToDelete);
+
+      await deleteObject(storageRef);
+
+      setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast.error("Failed to delete the image.");
+    }
+  };
 
   useEffect(() => {
     const fetchProductAndPress = async () => {
@@ -106,6 +164,10 @@ export default function ProductDetailsPage() {
     setQuantity(value ? Number(value) : "");
   };
 
+  const handleInstructions = (event) => {
+    setInstructions(event.target.value);
+  };
+
   const handleQuantityBlur = () => {
     if (quantity < product.minimumPrintingQuantity || !quantity) {
       toast.error(
@@ -116,8 +178,62 @@ export default function ProductDetailsPage() {
     }
   };
 
-  const handleAddToCart = () => {
-    alert("Product added to cart!");
+  const handleAddToCart = async () => {
+    if (!quantity || quantity < product.minimumPrintingQuantity) {
+      toast.error(
+        `Please select a quantity greater than or equal to ${product.minimumPrintingQuantity}.`,
+        { position: "top-center" }
+      );
+      return;
+    }
+
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error("You must be logged in to add products to the cart.", {
+        position: "top-center",
+      });
+      router.push("/login");
+      return;
+    }
+
+    const totalPrice = product.productPrice * quantity;
+
+    try {
+      const cartDocRef = doc(db, "carts", user.uid);
+      const cartDoc = await getDoc(cartDocRef);
+
+      const productData = {
+        productId: id,
+        quantity,
+        design: images,
+        instructions,
+        totalPrice,
+        status: "pending",
+      };
+
+      if (cartDoc.exists()) {
+        await updateDoc(cartDocRef, {
+          products: arrayUnion(productData),
+        });
+      } else {
+        await setDoc(cartDocRef, {
+          userId: user.uid,
+          products: [productData],
+        });
+      }
+
+      toast.success("Product added to cart successfully!", {
+        position: "bottom-right",
+      });
+
+      setImages([]);
+      setInstructions("");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add product to cart. Please try again.", {
+        position: "bottom-right",
+      });
+    }
   };
 
   if (loading) {
@@ -278,6 +394,94 @@ export default function ProductDetailsPage() {
               >
                 +
               </Button>
+            </Box>
+
+            <input
+              accept="image/*"
+              style={{ display: "none" }}
+              id="upload-images"
+              type="file"
+              multiple
+              onChange={handleImageUpload}
+            />
+            <label htmlFor="upload-images">
+              <Button
+                startIcon={<CloudUploadIcon />}
+                size="small"
+                variant="outlined"
+                component="span"
+                sx={{ color: "#28a745", borderColor: "#28a745" }}
+              >
+                Upload Design
+              </Button>
+            </label>
+
+            <div style={{ display: "flex", position: "relative" }}>
+              {images.map((image, index) => (
+                <div
+                  key={index}
+                  style={{ position: "relative", marginRight: 10 }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.querySelector(
+                      ".delete-icon"
+                    ).style.opacity = 1;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.querySelector(
+                      ".delete-icon"
+                    ).style.opacity = 0;
+                  }}
+                >
+                  <img
+                    src={image}
+                    alt={`img-${index}`}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      objectFit: "cover",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <IconButton
+                    className="delete-icon"
+                    onClick={() => handleImageDelete(index)}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      color: "red",
+                      opacity: 0,
+                      transition: "opacity 0.2s",
+                    }}
+                    size="small"
+                  >
+                    <DeleteIcon fontSize="large" />
+                  </IconButton>
+                </div>
+              ))}
+            </div>
+
+            <Box display="flex" alignItems="center" gap={2}>
+              <Textarea
+                name="Outlined"
+                variant="outlined"
+                minRows={4}
+                maxRows={4}
+                placeholder="Instructions"
+                required
+                size="md"
+                value={instructions}
+                onChange={handleInstructions}
+                sx={{
+                  "&::before": {
+                    display: "none",
+                  },
+                  "&:focus-within": {
+                    outline: "2px solid black",
+                    outlineOffset: "2px",
+                  },
+                }}
+              />
             </Box>
 
             <Button
