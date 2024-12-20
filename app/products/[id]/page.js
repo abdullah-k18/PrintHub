@@ -199,6 +199,16 @@ export default function ProductDetailsPage() {
     const totalPrice = product.productPrice * quantity;
 
     try {
+      const productDocRef = doc(db, "products", id);
+      const productDoc = await getDoc(productDocRef);
+
+      if (!productDoc.exists()) {
+        toast.error("Product not found.", { position: "bottom-right" });
+        return;
+      }
+
+      const sellerID = productDoc.data().uid;
+
       const cartDocRef = doc(db, "cart", user.uid);
       const cartDoc = await getDoc(cartDocRef);
 
@@ -209,6 +219,7 @@ export default function ProductDetailsPage() {
         instructions,
         totalPrice,
         status: "pending",
+        sellerID,
       };
 
       if (cartDoc.exists()) {
