@@ -24,6 +24,7 @@ import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CheckoutDialog from "../components/CheckoutDialog";
 
 export default function Cart() {
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ export default function Cart() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [subtotal, setSubtotal] = useState(0);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -158,6 +160,14 @@ export default function Cart() {
     setDialogOpen(false);
     setProductToDelete(null);
     calculateSubtotal();
+  };
+
+  const handleCheckoutClick = () => {
+    if (subtotal === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
+    setCheckoutOpen(true);
   };
 
   if (loading) {
@@ -291,6 +301,7 @@ export default function Cart() {
           <Button
             variant="contained"
             disabled={subtotal === 0}
+            onClick={handleCheckoutClick}
             sx={{
               fontWeight: "bold",
               backgroundColor: "#28a745",
@@ -301,6 +312,20 @@ export default function Cart() {
           >
             Check Out
           </Button>
+
+          <CheckoutDialog
+            open={checkoutOpen}
+            onClose={(updatedCart) => {
+              setCheckoutOpen(false); // Close the dialog
+              if (updatedCart) setCartProducts(updatedCart); // Update cart with remaining items
+              calculateSubtotal(); // Recalculate the subtotal
+            }}
+            cartProducts={cartProducts} // Full cart passed to dialog
+            selectedProducts={cartProducts.filter(
+              (product) => product.selected
+            )} // Only selected products
+            subtotal={subtotal}
+          />
         </div>
       </div>
 
