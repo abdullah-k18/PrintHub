@@ -77,9 +77,9 @@ export default function CheckoutDialog({
           design: product.design || [],
           instructions: product.instructions || "No instructions",
           sellerId: product.sellerID || "unknown",
+          orderStatus: "pending",
         })),
         totalOrderPrice: subtotal || 0,
-        orderStatus: "pending",
         orderDate: new Date(),
       };
 
@@ -89,12 +89,12 @@ export default function CheckoutDialog({
       await setDoc(orderRef, orderData);
 
       const sellerOrders = {};
-      selectedProducts.forEach((product) => {
-        const { sellerID } = product;
-        if (!sellerOrders[sellerID]) {
-          sellerOrders[sellerID] = [];
-        }
-        sellerOrders[sellerID].push({
+    selectedProducts.forEach((product) => {
+      const { sellerID } = product;
+
+      if (!sellerOrders[sellerID]) {
+        sellerOrders[sellerID] = {
+          orderId,
           buyerDetails: {
             name: buyerDetails.name || "N/A",
             number: buyerDetails.number || "N/A",
@@ -103,24 +103,32 @@ export default function CheckoutDialog({
             address: buyerDetails.address || "N/A",
             paymentMethod: buyerDetails.paymentMethod || "COD",
           },
-          orderId,
-          productId: product.productId || "unknown",
-          productName: product.productName || "unknown",
-          quantity: product.quantity || 0,
-          totalPrice: product.totalPrice || 0,
-          design: product.design || [],
-          instructions: product.instructions || "No instructions",
-          buyerId: user.uid,
+          products: [],
+          totalOrderPrice: 0,
           orderDate: new Date(),
-        });
+        };
+      }
+
+      sellerOrders[sellerID].products.push({
+        productId: product.productId || "unknown",
+        productName: product.productName || "unknown",
+        quantity: product.quantity || 0,
+        totalPrice: product.totalPrice || 0,
+        design: product.design || [],
+        instructions: product.instructions || "No instructions",
+        orderStatus: "pending",
+        buyerId: user.uid,
       });
+
+      sellerOrders[sellerID].totalOrderPrice += product.totalPrice || 0;
+    });
 
       for (const sellerID in sellerOrders) {
         const sellerOrdersRef = doc(db, "sellerOrders", sellerID);
         await setDoc(
           sellerOrdersRef,
           {
-            orders: arrayUnion(...sellerOrders[sellerID]),
+            orders: arrayUnion(sellerOrders[sellerID]),
           },
           { merge: true }
         );
@@ -162,6 +170,23 @@ export default function CheckoutDialog({
           onChange={handleInputChange}
           fullWidth
           margin="dense"
+          InputLabelProps={{
+            sx: {
+              "&.Mui-focused": {
+                color: "black",
+              },
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "black",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "black",
+              },
+            },
+          }}
         />
         <TextField
           label="Phone Number"
@@ -170,6 +195,23 @@ export default function CheckoutDialog({
           onChange={handleInputChange}
           fullWidth
           margin="dense"
+          InputLabelProps={{
+            sx: {
+              "&.Mui-focused": {
+                color: "black",
+              },
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "black",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "black",
+              },
+            },
+          }}
         />
         <TextField
           label="City"
@@ -178,6 +220,23 @@ export default function CheckoutDialog({
           onChange={handleInputChange}
           fullWidth
           margin="dense"
+          InputLabelProps={{
+            sx: {
+              "&.Mui-focused": {
+                color: "black",
+              },
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "black",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "black",
+              },
+            },
+          }}
         />
         <TextField
           label="Postal Code"
@@ -186,6 +245,23 @@ export default function CheckoutDialog({
           onChange={handleInputChange}
           fullWidth
           margin="dense"
+          InputLabelProps={{
+            sx: {
+              "&.Mui-focused": {
+                color: "black",
+              },
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "black",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "black",
+              },
+            },
+          }}
         />
         <TextField
           label="Address"
@@ -196,6 +272,23 @@ export default function CheckoutDialog({
           margin="dense"
           multiline
           rows={2}
+          InputLabelProps={{
+            sx: {
+              "&.Mui-focused": {
+                color: "black",
+              },
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": {
+                borderColor: "black",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "black",
+              },
+            },
+          }}
         />
       </DialogContent>
       <DialogActions>

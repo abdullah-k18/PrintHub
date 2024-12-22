@@ -25,6 +25,7 @@ import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CheckoutDialog from "../components/CheckoutDialog";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 export default function Cart() {
   const [loading, setLoading] = useState(true);
@@ -189,103 +190,170 @@ export default function Cart() {
     <div className="bg-gray-100 min-h-screen flex flex-col">
       <BuyerNavbar name={name} />
       <div className="lg:pt-[5%] pt-[20%] md:pt-[10%] flex-grow w-full max-w-4xl p-6 mx-auto">
-        <Typography variant="h4" className="mb-4 text-center" fontWeight="bold">
-          Your Cart
-        </Typography>
+        <div className="flex items-center justify-between mb-4">
+          <Button
+            startIcon={<ArrowBackIosIcon />}
+            onClick={() => router.push("/products")}
+            sx={{
+              fontWeight: "bold",
+              textTransform: "none",
+              color: "black",
+              display: { xs: "flex", sm: "inline-flex" },
+              justifyContent: "center",
+              alignItems: "center",
+              "& .MuiButton-startIcon": {
+                margin: { xs: 0, sm: "0 4px" },
+              },
+              fontSize: { xs: "0", sm: "1rem" },
+              minWidth: "auto",
+            }}
+          >
+            Continue Shopping
+          </Button>
+          <Typography
+            variant="h4"
+            className="text-center"
+            fontWeight="bold"
+            sx={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Your Cart
+          </Typography>
+        </div>
+
         <div className="flex items-center mb-4">
           <Checkbox checked={selectAll} onChange={handleSelectAll} />
           <Typography variant="body1">Select All</Typography>
         </div>
         <hr className="mb-4" />
         <div>
-          {cartProducts.map((product, index) => (
-            <div key={index} className="mb-4">
-              <div className="flex items-start mb-4">
-                <Checkbox
-                  checked={product.selected}
-                  onChange={() => handleProductSelect(index)}
-                />
-                <div className="flex-grow flex items-center">
-                  <img
-                    src={product.productImage}
-                    alt="Product"
-                    className="w-20 h-20 object-cover mr-4"
+          {Array.isArray(cartProducts) &&
+            cartProducts.map((product, index) => (
+              <div key={index} className="mb-4">
+                <div className="flex items-start mb-4">
+                  <Checkbox
+                    checked={product.selected}
+                    onChange={() => handleProductSelect(index)}
                   />
-                  <div className="flex-grow">
-                    <Link href={`/products/${product.productId}`}>
-                      <Typography
-                        variant="h5"
-                        fontWeight="bold"
-                        sx={{
-                          textDecorationColor: "inherit",
-                          cursor: "pointer",
-                          "&:hover": {
-                            textDecoration: "underline",
-                          },
+                  <div className="flex-grow flex items-center">
+                    <img
+                      src={product.productImage}
+                      alt="Product"
+                      className="w-20 h-20 object-cover mr-4"
+                    />
+                    <div className="flex-grow">
+                      <Link href={`/products/${product.productId}`}>
+                        <Typography
+                          variant="h5"
+                          fontWeight="bold"
+                          sx={{
+                            textDecorationColor: "inherit",
+                            cursor: "pointer",
+                            "&:hover": {
+                              textDecoration: "underline",
+                            },
+                          }}
+                        >
+                          {product.productName}
+                        </Typography>
+                      </Link>
+                      <div
+                        style={{
+                          marginBottom: "1rem",
+                          width: "200px",
+                          marginTop: "1rem",
                         }}
                       >
-                        {product.productName}
-                      </Typography>
-                    </Link>
-                    <div
-                      style={{
-                        marginBottom: "1rem",
-                        width: "200px",
-                        marginTop: "1rem",
-                      }}
-                    >
-                      <TextField
-                        label="Quantity"
-                        type="number"
-                        value={product.quantity}
-                        InputProps={{ readOnly: true }}
-                        variant="outlined"
-                        size="small"
-                      />
-                    </div>
-                    <div style={{ marginBottom: "1rem", width: "300px" }}>
-                      <TextField
-                        label="Instructions"
-                        value={product.instructions}
-                        InputProps={{ readOnly: true }}
-                        multiline
-                        rows={3}
-                        variant="outlined"
-                        size="small"
-                      />
-                    </div>
-                    <div className="flex mt-2">
-                      {product.design.map((url, i) => (
-                        <img
-                          key={i}
-                          src={url}
-                          alt={`Design ${i + 1}`}
-                          className="mr-2"
-                          style={{
-                            width: 50,
-                            height: 50,
-                            objectFit: "cover",
-                            borderRadius: 4,
+                        <TextField
+                          label="Quantity"
+                          type="number"
+                          value={product.quantity}
+                          InputProps={{ readOnly: true }}
+                          variant="outlined"
+                          size="small"
+                          InputLabelProps={{
+                            sx: {
+                              "&.Mui-focused": {
+                                color: "black",
+                              },
+                            },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "&:hover fieldset": {
+                                borderColor: "black",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "black",
+                              },
+                            },
                           }}
                         />
-                      ))}
+                      </div>
+                      <div style={{ marginBottom: "1rem", width: "300px" }}>
+                        <TextField
+                          label="Instructions"
+                          value={product.instructions}
+                          InputProps={{ readOnly: true }}
+                          multiline
+                          rows={3}
+                          variant="outlined"
+                          size="small"
+                          InputLabelProps={{
+                            sx: {
+                              "&.Mui-focused": {
+                                color: "black",
+                              },
+                            },
+                          }}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              "&:hover fieldset": {
+                                borderColor: "black",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "black",
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                      <div className="flex mt-2">
+                        {product.design.map((url, i) => (
+                          <img
+                            key={i}
+                            src={url}
+                            alt={`Design ${i + 1}`}
+                            className="mr-2"
+                            style={{
+                              width: 50,
+                              height: 50,
+                              objectFit: "cover",
+                              borderRadius: 4,
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <Typography
+                        variant="body1"
+                        fontWeight="bold"
+                        sx={{ marginTop: "5px" }}
+                      >
+                        RS {product.totalPrice}
+                      </Typography>
                     </div>
-                    <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      sx={{ marginTop: "5px" }}
-                    >
-                      RS {product.totalPrice}
-                    </Typography>
                   </div>
+                  <IconButton onClick={() => handleOpenDialog(index)}>
+                    <DeleteIcon color="error" />
+                  </IconButton>
                 </div>
-                <IconButton onClick={() => handleOpenDialog(index)}>
-                  <DeleteIcon color="error" />
-                </IconButton>
+                <hr />
               </div>
-              <hr />
-            </div>
-          ))}
+            ))}
         </div>
 
         {cartProducts.length === 0 && (
@@ -316,14 +384,21 @@ export default function Cart() {
           <CheckoutDialog
             open={checkoutOpen}
             onClose={(updatedCart) => {
-              setCheckoutOpen(false); // Close the dialog
-              if (updatedCart) setCartProducts(updatedCart); // Update cart with remaining items
-              calculateSubtotal(); // Recalculate the subtotal
+              setCheckoutOpen(false);
+              if (Array.isArray(updatedCart)) {
+                const clearedSelection = updatedCart.map((item) => ({
+                  ...item,
+                  selected: false,
+                }));
+                setCartProducts(clearedSelection);
+              }
+              setSelectAll(false);
+              setSubtotal(0);
             }}
-            cartProducts={cartProducts} // Full cart passed to dialog
+            cartProducts={cartProducts}
             selectedProducts={cartProducts.filter(
               (product) => product.selected
-            )} // Only selected products
+            )}
             subtotal={subtotal}
           />
         </div>
