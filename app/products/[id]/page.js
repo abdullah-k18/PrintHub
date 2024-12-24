@@ -187,6 +187,20 @@ export default function ProductDetailsPage() {
       return;
     }
 
+    if (images.length === 0) {
+      toast.error("Please upload design images.", {
+        position: "bottom-right",
+      });
+      return;
+    }
+  
+    if (!instructions.trim()) {
+      toast.error("Please provide printing instructions.", {
+        position: "bottom-right",
+      });
+      return;
+    }
+
     const user = auth.currentUser;
     if (!user) {
       toast.error("You must be logged in to add products to the cart.", {

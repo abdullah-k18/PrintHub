@@ -234,7 +234,7 @@ export default function Cart() {
           {Array.isArray(cartProducts) &&
             cartProducts.map((product, index) => (
               <div key={index} className="mb-4">
-                <div className="flex items-start mb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center mb-4">
                   <Checkbox
                     checked={product.selected}
                     onChange={() => handleProductSelect(index)}
@@ -347,9 +347,11 @@ export default function Cart() {
                       </Typography>
                     </div>
                   </div>
-                  <IconButton onClick={() => handleOpenDialog(index)}>
-                    <DeleteIcon color="error" />
-                  </IconButton>
+                  <div className="self-start sm:self-center sm:ml-4 mt-4 sm:mt-0">
+                    <IconButton onClick={() => handleOpenDialog(index)}>
+                      <DeleteIcon color="error" />
+                    </IconButton>
+                  </div>
                 </div>
                 <hr />
               </div>
