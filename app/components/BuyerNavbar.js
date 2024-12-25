@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "../../firebase";
 import { AppBar, Toolbar, Avatar, Menu, MenuItem, Typography, ListItemIcon, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { Logout, ShoppingCart } from '@mui/icons-material';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import HomeIcon from '@mui/icons-material/Home';
 import Link from "next/link";
 
@@ -86,6 +87,14 @@ export default function BuyerNavbar({ name }) {
                     <ShoppingCart fontSize="small" style={{ color: 'black' }} />
                   </ListItemIcon>
                   <Typography>Cart</Typography>
+                </MenuItem>
+              </Link>
+              <Link href="/Orders" passHref>
+                <MenuItem onClick={handleMenuClose}>
+                  <ListItemIcon>
+                    <ShoppingBagIcon fontSize="small" style={{ color: 'black' }} />
+                  </ListItemIcon>
+                  <Typography>Orders</Typography>
                 </MenuItem>
               </Link>
               <MenuItem onClick={handleClickOpen}>

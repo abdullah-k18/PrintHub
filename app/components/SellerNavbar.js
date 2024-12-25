@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "../../firebase";
 import { AppBar, Toolbar, Avatar, Menu, MenuItem, Typography, ListItemIcon, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
-import { Logout, ShoppingCart } from '@mui/icons-material';
+import { Logout } from '@mui/icons-material';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Boxes } from "lucide-react";
 import Link from "next/link";
@@ -92,7 +93,7 @@ export default function SellerNavbar({ pressName }) {
               <Link href="/press/orders" passHref>
                 <MenuItem onClick={handleMenuClose}>
                   <ListItemIcon>
-                    <ShoppingCart fontSize="small" style={{ color: 'black' }} />
+                    <ShoppingBagIcon fontSize="small" style={{ color: 'black' }} />
                   </ListItemIcon>
                   <Typography>Orders</Typography>
                 </MenuItem>
