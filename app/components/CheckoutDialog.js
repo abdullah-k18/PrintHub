@@ -106,6 +106,7 @@ export default function CheckoutDialog({
           products: [],
           totalOrderPrice: 0,
           orderDate: new Date(),
+          orderStatus: "pending"
         };
       }
 
