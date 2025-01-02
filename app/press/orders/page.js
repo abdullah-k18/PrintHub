@@ -447,7 +447,7 @@ export default function SellerOrders() {
               }}
             >
               <Typography variant="subtitle1" color="textSecondary">
-                No orders with the "{filterStatus}" status.
+                No orders with the &quot;{filterStatus}&quot; status.
               </Typography>
             </Box>
           )}
