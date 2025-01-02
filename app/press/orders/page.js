@@ -19,6 +19,7 @@ import {
   Select,
   MenuItem,
   IconButton,
+  FormControl,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -28,6 +29,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download } from "yet-another-react-lightbox/plugins";
+import FormHelperText from "@mui/material/FormHelperText";
 
 export default function SellerOrders() {
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,7 @@ export default function SellerOrders() {
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [newStatus, setNewStatus] = useState("");
+  const [filterStatus, setFilterStatus] = useState("Pending");
   const router = useRouter();
 
   useEffect(() => {
@@ -191,6 +194,10 @@ export default function SellerOrders() {
     }
   };
 
+  const handleFilterChange = (event) => {
+    setFilterStatus(event.target.value);
+  };
+
   if (loading) {
     return (
       <div
@@ -209,243 +216,324 @@ export default function SellerOrders() {
   return (
     <div className="bg-gray-100 min-h-screen">
       <SellerNavbar pressName={pressName} />
-      <Box
-        sx={{
-          p: 3,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Orders
-        </Typography>
-        {orders.map((order, index) => (
-          <Card
-            key={order.orderId}
-            sx={{ mb: 3, width: "100%", maxWidth: "600px" }}
+      <div className="pt-[80px]">
+        <Box
+          sx={{
+            p: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            maxWidth: "1000px",
+            width: "100%",
+            margin: "0 auto",
+          }}
+        >
+          <FormControl
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": {
+                  borderColor: "black",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "black",
+                },
+              },
+            }}
           >
-            <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
-                Order # {order.orderId}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Total Price:</strong> RS {order.totalOrderPrice}
-              </Typography>
-              <Typography
-                sx={{
-                  color: "#1976d2",
-                  textTransform: "none",
-                  mb: 2,
-                  cursor: "pointer",
-                  borderBottom: "1px solid #e0e0e0",
-                  "&:hover": {
-                    textDecoration: "underline",
-                  },
-                }}
-                onClick={() => handleBuyerDetailsClick(order.buyerDetails)}
-              >
-                Buyer Details
-              </Typography>
-              <Box>
-                {order.products.map((product, idx) => (
-                  <Box
-                    key={idx}
-                    sx={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      mb: 2,
-                      borderBottom: "1px solid #e0e0e0",
-                      pb: 2,
-                    }}
-                  >
+            <Select
+              value={filterStatus}
+              onChange={handleFilterChange}
+              sx={{
+                mb: 1,
+                width: "160px",
+              }}
+              size="small"
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Processing">Processing</MenuItem>
+              <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
+              <MenuItem value="Delivered">Delivered</MenuItem>
+              <MenuItem value="Cancelled">Cancelled</MenuItem>
+            </Select>
+          </FormControl>
+          <FormHelperText sx={{ mb: 3 }}>Order Status</FormHelperText>
+
+          {orders.filter((order) =>
+            filterStatus === "All" ? true : order.orderStatus === filterStatus
+          ).length > 0 ? (
+            orders
+              .filter((order) =>
+                filterStatus === "All"
+                  ? true
+                  : order.orderStatus === filterStatus
+              )
+              .map((order, index) => (
+                <Card
+                  key={order.orderId}
+                  sx={{ mb: 3, width: "100%", maxWidth: "1000px" }}
+                >
+                  <CardContent>
+                    <Typography variant="h6" fontWeight="bold" gutterBottom>
+                      Order # {order.orderId}
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      <strong>Total Price:</strong> RS {order.totalOrderPrice}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "#1976d2",
+                        textTransform: "none",
+                        mb: 2,
+                        cursor: "pointer",
+                        borderBottom: "1px solid #e0e0e0",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                      onClick={() =>
+                        handleBuyerDetailsClick(order.buyerDetails)
+                      }
+                    >
+                      Buyer Details
+                    </Typography>
+                    <Box>
+                      {order.products.map((product, idx) => (
+                        <Box
+                          key={idx}
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            mb: 2,
+                            borderBottom: "1px solid #e0e0e0",
+                            pb: 2,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              mr: 2,
+                              width: "100px",
+                              height: "100px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <img
+                              src={productImages[product.productId] || ""}
+                              alt={product.productName}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                              }}
+                            />
+                          </Box>
+
+                          <Box>
+                            <Typography variant="subtitle1" fontWeight="bold">
+                              {product.productName}
+                            </Typography>
+                            <Typography variant="body2">
+                              Quantity: {product.quantity}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              {product.instructions ||
+                                "No specific instructions"}
+                            </Typography>
+                            <>
+                              <Box sx={{ display: "flex", mt: 1 }}>
+                                {product.design.map((designUrl, i) => (
+                                  <Box
+                                    key={i}
+                                    sx={{
+                                      mr: 1,
+                                      width: "50px",
+                                      height: "50px",
+                                    }}
+                                    onClick={() => handleOpenLightbox(i)}
+                                  >
+                                    <img
+                                      src={designUrl}
+                                      alt={`Design ${i + 1}`}
+                                      style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                  </Box>
+                                ))}
+                              </Box>
+
+                              <Lightbox
+                                open={open}
+                                close={() => setOpen(false)}
+                                currentIndex={currentIndex}
+                                slides={product.design.map((src) => ({
+                                  src,
+                                  alt: "Product design",
+                                  width: 3840,
+                                  height: 2560,
+                                  srcSet: [
+                                    { src, width: 320, height: 213 },
+                                    { src, width: 640, height: 427 },
+                                    { src, width: 1200, height: 800 },
+                                    { src, width: 2048, height: 1365 },
+                                    { src, width: 3840, height: 2560 },
+                                  ],
+                                  download: src,
+                                }))}
+                                plugins={[Download]}
+                              />
+                            </>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
                     <Box
                       sx={{
-                        mr: 2,
-                        width: "100px",
-                        height: "100px",
-                        overflow: "hidden",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <img
-                        src={productImages[product.productId] || ""}
-                        alt={product.productName}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          borderRadius: "8px",
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
                         }}
-                      />
-                    </Box>
-
-                    <Box>
-                      <Typography variant="subtitle1" fontWeight="bold">
-                        {product.productName}
-                      </Typography>
-                      <Typography variant="body2">
-                        Quantity: {product.quantity}
-                      </Typography>
-                      <Typography variant="body2" color="textSecondary">
-                        {product.instructions || "No specific instructions"}
-                      </Typography>
-                      <>
-                        <Box sx={{ display: "flex", mt: 1 }}>
-                          {product.design.map((designUrl, i) => (
-                            <Box
-                              key={i}
-                              sx={{ mr: 1, width: "50px", height: "50px" }}
-                              onClick={() => handleOpenLightbox(i)}
-                            >
-                              <img
-                                src={designUrl}
-                                alt={`Design ${i + 1}`}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "cover",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              />
-                            </Box>
-                          ))}
-                        </Box>
-
-                        <Lightbox
-                          open={open}
-                          close={() => setOpen(false)}
-                          currentIndex={currentIndex}
-                          slides={product.design.map((src) => ({
-                            src,
-                            alt: "Product design",
-                            width: 3840,
-                            height: 2560,
-                            srcSet: [
-                              { src, width: 320, height: 213 },
-                              { src, width: 640, height: 427 },
-                              { src, width: 1200, height: 800 },
-                              { src, width: 2048, height: 1365 },
-                              { src, width: 3840, height: 2560 },
-                            ],
-                            download: src,
-                          }))}
-                          plugins={[Download]}
+                      >
+                        <Box
+                          sx={{
+                            width: "10px",
+                            height: "10px",
+                            borderRadius: "50%",
+                            backgroundColor: getStatusColor(order.orderStatus),
+                            mr: 1,
+                          }}
                         />
-                      </>
+
+                        <Typography variant="subtitle2" color="textSecondary">
+                          {order.orderStatus}
+                        </Typography>
+                      </Box>
+
+                      <IconButton
+                        sx={{
+                          backgroundColor: "#28a745",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#1e7e34",
+                          },
+                        }}
+                        onClick={() => handleEditStatusClick(order)}
+                      >
+                        <EditIcon />
+                      </IconButton>
                     </Box>
-                  </Box>
-                ))}
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      backgroundColor: getStatusColor(order.orderStatus),
-                      mr: 1,
-                    }}
-                  />
-
-                  <Typography variant="subtitle2" color="textSecondary">
-                    {order.orderStatus}
-                  </Typography>
-                </Box>
-
-                <IconButton
-                  sx={{
-                    backgroundColor: "#28a745",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#1e7e34",
-                    },
-                  }}
-                  onClick={() => handleEditStatusClick(order)}
-                >
-                  <EditIcon />
-                </IconButton>
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Buyer Details</DialogTitle>
-        <DialogContent>
-          {selectedBuyerDetails ? (
-            <DialogContentText>
-              <strong>Name:</strong> {selectedBuyerDetails.name || "N/A"} <br />
-              <strong>Contact Number:</strong>{" "}
-              {selectedBuyerDetails.number || "N/A"} <br />
-              <strong>City:</strong> {selectedBuyerDetails.city || "N/A"} <br />
-              <strong>Postal Code:</strong>{" "}
-              {selectedBuyerDetails.postalCode || "N/A"} <br />
-              <strong>Address:</strong> {selectedBuyerDetails.address || "N/A"}{" "}
-              <br />
-              <strong>Payment Method:</strong>{" "}
-              {selectedBuyerDetails.paymentMethod || "COD"}
-            </DialogContentText>
+                  </CardContent>
+                </Card>
+              ))
           ) : (
-            <DialogContentText>Buyer details not available.</DialogContentText>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              <Typography variant="subtitle1" color="textSecondary">
+                No orders with the "{filterStatus}" status.
+              </Typography>
+            </Box>
           )}
-        </DialogContent>
-      </Dialog>
+        </Box>
 
-      <Dialog open={statusDialogOpen} onClose={handleCloseStatusDialog}>
-        <DialogTitle>Change Order Status</DialogTitle>
-        <DialogContent>
-          <Select
-            value={newStatus}
-            onChange={(e) => setNewStatus(e.target.value)}
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            <MenuItem value="Pending">Pending</MenuItem>
-            <MenuItem value="Processing">Processing</MenuItem>
-            <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
-            <MenuItem value="Delivered">Delivered</MenuItem>
-            <MenuItem value="Cancelled">Cancelled</MenuItem>
-          </Select>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleCloseStatusDialog}
-            color="error"
-            sx={{ fontWeight: "bold" }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleStatusChange}
-            color="success"
-            sx={{ fontWeight: "bold" }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={true}
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
+        <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+          <DialogTitle>Buyer Details</DialogTitle>
+          <DialogContent>
+            {selectedBuyerDetails ? (
+              <DialogContentText>
+                <strong>Name:</strong> {selectedBuyerDetails.name || "N/A"}{" "}
+                <br />
+                <strong>Contact Number:</strong>{" "}
+                {selectedBuyerDetails.number || "N/A"} <br />
+                <strong>City:</strong> {selectedBuyerDetails.city || "N/A"}{" "}
+                <br />
+                <strong>Postal Code:</strong>{" "}
+                {selectedBuyerDetails.postalCode || "N/A"} <br />
+                <strong>Address:</strong>{" "}
+                {selectedBuyerDetails.address || "N/A"} <br />
+                <strong>Payment Method:</strong>{" "}
+                {selectedBuyerDetails.paymentMethod || "COD"}
+              </DialogContentText>
+            ) : (
+              <DialogContentText>
+                Buyer details not available.
+              </DialogContentText>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={statusDialogOpen} onClose={handleCloseStatusDialog}>
+          <DialogTitle>Change Order Status</DialogTitle>
+          <DialogContent>
+            <FormControl
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "&:hover fieldset": {
+                    borderColor: "black",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "black",
+                  },
+                },
+              }}
+            >
+              <Select
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+                sx={{ width: "160px" }}
+                size="small"
+              >
+                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="Processing">Processing</MenuItem>
+                <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
+                <MenuItem value="Delivered">Delivered</MenuItem>
+                <MenuItem value="Cancelled">Cancelled</MenuItem>
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseStatusDialog}
+              color="error"
+              sx={{ fontWeight: "bold" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleStatusChange}
+              color="success"
+              sx={{ fontWeight: "bold" }}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={true}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
+      </div>
     </div>
   );
 }
