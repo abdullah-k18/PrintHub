@@ -17,7 +17,7 @@ import { useState } from "react";
 import { db, storage } from "../../firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function AddProductDialog({ open, onClose, onAdd, uid }) {
@@ -390,14 +390,6 @@ export default function AddProductDialog({ open, onClose, onAdd, uid }) {
           </Button>
         </DialogActions>
       </Dialog>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={true}
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
     </>
   );
 }

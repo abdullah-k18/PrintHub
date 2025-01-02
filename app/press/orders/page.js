@@ -10,15 +10,24 @@ import {
   CardContent,
   Typography,
   Box,
-  Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
+  Button,
+  Select,
+  MenuItem,
+  IconButton,
 } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
+import EditIcon from "@mui/icons-material/Edit";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import SellerNavbar from "@/app/components/SellerNavbar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import { Download } from "yet-another-react-lightbox/plugins";
 
 export default function SellerOrders() {
   const [loading, setLoading] = useState(true);
@@ -26,7 +35,12 @@ export default function SellerOrders() {
   const [orders, setOrders] = useState([]);
   const [productImages, setProductImages] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [selectedBuyerDetails, setSelectedBuyerDetails] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [newStatus, setNewStatus] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -93,6 +107,88 @@ export default function SellerOrders() {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setSelectedBuyerDetails(null);
+  };
+
+  const handleEditStatusClick = (order) => {
+    setSelectedOrder(order);
+    setNewStatus(order.orderStatus);
+    setStatusDialogOpen(true);
+  };
+
+  const handleCloseStatusDialog = () => {
+    setStatusDialogOpen(false);
+    setSelectedOrder(null);
+  };
+
+  const handleStatusChange = async () => {
+    if (selectedOrder) {
+      try {
+        const updatedOrders = orders.map((order) =>
+          order.orderId === selectedOrder.orderId
+            ? { ...order, orderStatus: newStatus }
+            : order
+        );
+        setOrders(updatedOrders);
+
+        await updateDoc(doc(db, "sellerOrders", auth.currentUser.uid), {
+          orders: updatedOrders,
+        });
+
+        const buyerOrderRef = doc(
+          db,
+          "orders",
+          selectedOrder.buyerId,
+          "userOrders",
+          selectedOrder.orderId
+        );
+
+        const buyerOrderDoc = await getDoc(buyerOrderRef);
+        if (buyerOrderDoc.exists()) {
+          const buyerOrderData = buyerOrderDoc.data();
+          const updatedProducts = buyerOrderData.products.map((product) => {
+            if (product.productId === selectedOrder.products[0].productId) {
+              return { ...product, orderStatus: newStatus };
+            }
+            return product;
+          });
+
+          await updateDoc(buyerOrderRef, {
+            products: updatedProducts,
+          });
+        }
+
+        toast.success("Status Updated Successfully", {
+          position: "bottom-right",
+          autoClose: 3000,
+        });
+
+        handleCloseStatusDialog();
+      } catch (error) {
+        console.error("Error updating order status:", error);
+      }
+    }
+  };
+
+  const handleOpenLightbox = (index) => {
+    setCurrentIndex(index);
+    setOpen(true);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Pending":
+        return "gray";
+      case "Processing":
+        return "orange";
+      case "Out for Delivery":
+        return "yellow";
+      case "Delivered":
+        return "green";
+      case "Cancelled":
+        return "red";
+      default:
+        return "gray";
+    }
   };
 
   if (loading) {
@@ -193,33 +289,95 @@ export default function SellerOrders() {
                       <Typography variant="body2" color="textSecondary">
                         {product.instructions || "No specific instructions"}
                       </Typography>
+                      <>
+                        <Box sx={{ display: "flex", mt: 1 }}>
+                          {product.design.map((designUrl, i) => (
+                            <Box
+                              key={i}
+                              sx={{ mr: 1, width: "50px", height: "50px" }}
+                              onClick={() => handleOpenLightbox(i)}
+                            >
+                              <img
+                                src={designUrl}
+                                alt={`Design ${i + 1}`}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </Box>
+                          ))}
+                        </Box>
 
-                      <Box sx={{ display: "flex", mt: 1 }}>
-                        {product.design.map((designUrl, i) => (
-                          <Box
-                            key={i}
-                            sx={{ mr: 1, width: "50px", height: "50px" }}
-                          >
-                            <img
-                              src={designUrl}
-                              alt={`Design ${i + 1}`}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                                borderRadius: "4px",
-                              }}
-                            />
-                          </Box>
-                        ))}
-                      </Box>
+                        <Lightbox
+                          open={open}
+                          close={() => setOpen(false)}
+                          currentIndex={currentIndex}
+                          slides={product.design.map((src) => ({
+                            src,
+                            alt: "Product design",
+                            width: 3840,
+                            height: 2560,
+                            srcSet: [
+                              { src, width: 320, height: 213 },
+                              { src, width: 640, height: 427 },
+                              { src, width: 1200, height: 800 },
+                              { src, width: 2048, height: 1365 },
+                              { src, width: 3840, height: 2560 },
+                            ],
+                            download: src,
+                          }))}
+                          plugins={[Download]}
+                        />
+                      </>
                     </Box>
                   </Box>
                 ))}
               </Box>
-              <Typography variant="subtitle2" color="textSecondary">
-                <strong>Status</strong> {order.orderStatus}
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor: getStatusColor(order.orderStatus),
+                      mr: 1,
+                    }}
+                  />
+
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {order.orderStatus}
+                  </Typography>
+                </Box>
+
+                <IconButton
+                  sx={{
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#1e7e34",
+                    },
+                  }}
+                  onClick={() => handleEditStatusClick(order)}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Box>
             </CardContent>
           </Card>
         ))}
@@ -246,6 +404,48 @@ export default function SellerOrders() {
           )}
         </DialogContent>
       </Dialog>
+
+      <Dialog open={statusDialogOpen} onClose={handleCloseStatusDialog}>
+        <DialogTitle>Change Order Status</DialogTitle>
+        <DialogContent>
+          <Select
+            value={newStatus}
+            onChange={(e) => setNewStatus(e.target.value)}
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            <MenuItem value="Pending">Pending</MenuItem>
+            <MenuItem value="Processing">Processing</MenuItem>
+            <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
+            <MenuItem value="Delivered">Delivered</MenuItem>
+            <MenuItem value="Cancelled">Cancelled</MenuItem>
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseStatusDialog}
+            color="error"
+            sx={{ fontWeight: "bold" }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleStatusChange}
+            color="success"
+            sx={{ fontWeight: "bold" }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </div>
   );
 }

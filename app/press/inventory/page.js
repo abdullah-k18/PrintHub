@@ -442,6 +442,15 @@ export default function Inventory() {
           setEditDialogOpen(false);
         }}
       />
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={true}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </div>
   );
 }
