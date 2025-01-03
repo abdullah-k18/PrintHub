@@ -3,7 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  getFirestore,
+} from "firebase/firestore";
 import { db, auth } from "../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import {
@@ -14,6 +21,7 @@ import {
   TextField,
   Dialog,
   IconButton,
+  Avatar,
 } from "@mui/material";
 import { Close, Visibility } from "@mui/icons-material";
 import { Textarea } from "@mui/joy";
@@ -30,6 +38,9 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import Divider from "@mui/material/Divider";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -43,7 +54,10 @@ export default function ProductDetailsPage() {
   const [instructions, setInstructions] = useState("");
   const [activeImage, setActiveImage] = useState("");
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
   const [images, setImages] = useState([]);
+  const [userDetails, setUserDetails] = useState({});
 
   const uploadDesignImage = async (file) => {
     const uniqueFileName = `design-${Date.now()}-${file.name}`;
@@ -193,7 +207,7 @@ export default function ProductDetailsPage() {
       });
       return;
     }
-  
+
     if (!instructions.trim()) {
       toast.error("Please provide printing instructions.", {
         position: "bottom-right",
@@ -260,6 +274,79 @@ export default function ProductDetailsPage() {
         position: "bottom-right",
       });
     }
+  };
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const productDocRef = doc(db, "products", id);
+        const productDoc = await getDoc(productDocRef);
+
+        if (productDoc.exists()) {
+          const productData = productDoc.data();
+          const reviewsData = productData.reviews || [];
+          setReviews(reviewsData);
+
+          const totalRatings = reviewsData.reduce(
+            (acc, review) => acc + review.rating,
+            0
+          );
+          const avgRating =
+            reviewsData.length > 0 ? totalRatings / reviewsData.length : 0;
+          setAverageRating(avgRating);
+        }
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    fetchReviews();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const db = getFirestore();
+      const details = {};
+
+      for (const review of reviews) {
+        if (!details[review.userId]) {
+          try {
+            const userDocRef = doc(db, "buyers", review.userId);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+              details[review.userId] = userDoc.data();
+            } else {
+              details[review.userId] = { name: "Unknown User", avatar: null };
+            }
+          } catch (error) {
+            console.error("Error fetching user details:", error);
+          }
+        }
+      }
+      setUserDetails(details);
+    };
+
+    fetchUserDetails();
+  }, [reviews]);
+
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    return (
+      <>
+        {Array.from({ length: 5 }, (_, index) =>
+          index < fullStars ? (
+            <StarIcon key={index} sx={{ color: "#FFD700" }} />
+          ) : index === fullStars && hasHalfStar ? (
+            <StarIcon key={index} sx={{ color: "#FFD700" }} />
+          ) : (
+            <StarBorderIcon key={index} sx={{ color: "#FFD700" }} />
+          )
+        )}
+      </>
+    );
   };
 
   if (loading) {
@@ -530,6 +617,70 @@ export default function ProductDetailsPage() {
               Add to Cart
             </Button>
           </Box>
+        </Box>
+
+        <Box>
+          <Box display="flex" alignItems="center" mt={4}>
+            <Typography variant="h6" fontWeight="bold" sx={{ marginRight: 1 }}>
+              Reviews and Ratings
+            </Typography>
+            <Box display="flex" alignItems="center" gap={1}>
+              {renderStars(averageRating)}
+              <Typography
+                variant="body2"
+                fontWeight="bold"
+                color="textSecondary"
+              >
+                ({averageRating.toFixed(1)})
+              </Typography>
+            </Box>
+          </Box>
+          <Divider sx={{ my: 1 }} />
+
+          {reviews.length > 0 ? (
+            reviews.map((review, index) => {
+              const user = userDetails[review.userId] || {};
+              return (
+                <Box key={index} mb={2}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                  >
+                    <Avatar
+                      src={user.avatar}
+                      alt={user.name}
+                      sx={{ width: 32, height: 32 }}
+                    />
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight="bold"
+                      color="textPrimary"
+                      gutterBottom
+                      sx={{ lineHeight: "1", textAlign: "center" }}
+                    >
+                      {user.name || "Loading..."}
+                    </Typography>
+                    {renderStars(review.rating)}
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    {review.review}
+                  </Typography>
+                  <Divider sx={{ mt: 1 }} />
+                </Box>
+              );
+            })
+          ) : (
+            <Typography variant="body2" color="textSecondary">
+              No reviews yet.
+            </Typography>
+          )}
         </Box>
       </div>
 
