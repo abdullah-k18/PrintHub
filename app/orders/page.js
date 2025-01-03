@@ -11,17 +11,23 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Grid,
   Divider,
   Box,
+  Button,
 } from "@mui/material";
 import BuyerNavbar from "../components/BuyerNavbar";
 import Footer from "../components/Footer";
+import RatingDialog from "../components/RatingDialog";
+import { ToastContainer } from "react-toastify";
 
 export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
   const [name, setName] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [currentProductId, setCurrentProductId] = useState(null);
+  const [currentReview, setCurrentReview] = useState(null);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -42,25 +48,35 @@ export default function Orders() {
               ordersSnapshot.docs.map(async (orderDoc) => {
                 const order = orderDoc.data();
 
-                const productsWithImages = await Promise.all(
+                const productsWithReviews = await Promise.all(
                   order.products.map(async (product) => {
                     const productDoc = await getDoc(
                       doc(db, "products", product.productId)
                     );
 
                     if (productDoc.exists()) {
+                      const productData = productDoc.data();
+                      const userReview = productData.reviews?.find(
+                        (rev) => rev.userId === auth.currentUser.uid
+                      );
+
                       return {
                         ...product,
-                        image: productDoc.data().images[0],
+                        image: productData.images[0] || "",
+                        userReview: userReview || null,
                       };
                     }
 
-                    return { ...product, image: "" };
+                    return { ...product, image: "", userReview: null };
                   })
                 );
 
-                return { ...order, products: productsWithImages };
+                return { ...order, products: productsWithReviews };
               })
+            );
+
+            ordersData.sort(
+              (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
             );
 
             setOrders(ordersData);
@@ -97,6 +113,43 @@ export default function Orders() {
       default:
         return "gray";
     }
+  };
+
+  const handleOpenDialog = async (product) => {
+    try {
+      const productRef = doc(db, "products", product.productId);
+      const productDoc = await getDoc(productRef);
+      const reviews = productDoc.data().reviews || [];
+      const userReview = reviews.find(
+        (rev) => rev.userId === auth.currentUser.uid
+      );
+
+      setCurrentProductId(product.productId);
+      setCurrentReview(userReview || null);
+      setDialogOpen(true);
+    } catch (error) {
+      console.error("Error fetching product review:", error);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setCurrentProductId(null);
+    setCurrentReview(null);
+  };
+
+  const handleReviewPosted = (review) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) => ({
+        ...order,
+        products: order.products.map((product) =>
+          product.productId === currentProductId
+            ? { ...product, userReview: review }
+            : product
+        ),
+      }))
+    );
+    handleCloseDialog();
   };
 
   if (loading) {
@@ -189,6 +242,18 @@ export default function Orders() {
                         <Typography variant="body2">
                           Price: Rs. {product.totalPrice}
                         </Typography>
+                        {product.orderStatus === "Delivered" && (
+                          <Button
+                            size="small"
+                            onClick={() => handleOpenDialog(product)}
+                            variant="text"
+                            color="primary"
+                          >
+                            {product.userReview
+                              ? "Your Review"
+                              : "Write a Review"}
+                          </Button>
+                        )}
                       </Box>
                     </Box>
 
@@ -210,11 +275,33 @@ export default function Orders() {
             </Card>
           ))}
         </Box>
+
+        <RatingDialog
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          productId={currentProductId}
+          userId={auth.currentUser.uid}
+          existingReview={currentReview}
+          onReviewPosted={handleReviewPosted}
+        />
       </div>
 
       <hr />
 
       <Footer />
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
