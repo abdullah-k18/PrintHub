@@ -65,7 +65,7 @@ export default function BuyerNavbar({ name }) {
               </Avatar>
             </IconButton>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-              <Link href="/user/profile" passHref>
+              <Link href="/profile" passHref>
                 <MenuItem>
                   <Avatar sx={{ bgcolor: '#28a745', color: 'white', marginRight: '8px', fontWeight: 'bold' }}>
                     {name.charAt(0).toUpperCase()}
