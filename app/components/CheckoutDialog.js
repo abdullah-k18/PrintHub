@@ -116,7 +116,7 @@ export default function CheckoutDialog({
           design: product.design || [],
           instructions: product.instructions || "No instructions",
           sellerId: product.sellerID || "unknown",
-          orderStatus: "pending",
+          orderStatus: "Pending",
         })),
         totalOrderPrice: subtotal || 0,
         orderDate: new Date(),
@@ -145,7 +145,7 @@ export default function CheckoutDialog({
             products: [],
             totalOrderPrice: 0,
             orderDate: new Date(),
-            orderStatus: "pending",
+            orderStatus: "Pending",
             buyerId: user.uid,
           };
         }
@@ -157,7 +157,7 @@ export default function CheckoutDialog({
           totalPrice: product.totalPrice || 0,
           design: product.design || [],
           instructions: product.instructions || "No instructions",
-          orderStatus: "pending",
+          orderStatus: "Pending",
         });
 
         sellerOrders[sellerID].totalOrderPrice += product.totalPrice || 0;

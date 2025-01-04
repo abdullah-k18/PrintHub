@@ -267,7 +267,7 @@ export default function ProductDetailsPage() {
         design: images,
         instructions,
         totalPrice,
-        status: "pending",
+        status: "Pending",
         sellerID,
       };
 
