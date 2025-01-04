@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { doc, setDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import { doc, setDoc, arrayUnion, updateDoc, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { auth, db } from "../../firebase";
 
@@ -57,6 +57,45 @@ export default function CheckoutDialog({
     }
 
     try {
+      const inventoryErrors = [];
+      for (const product of selectedProducts) {
+        const productDocRef = doc(db, "products", product.productId);
+        const productDoc = await getDoc(productDocRef);
+
+        if (!productDoc.exists()) {
+          inventoryErrors.push(
+            `Product with ID ${product.productId} not found.`
+          );
+          continue;
+        }
+
+        const productData = productDoc.data();
+
+        if (productData.inventoryQuantity === 0) {
+          inventoryErrors.push(
+            `${product.productName || "Product"} is out of stock.`
+          );
+          continue;
+        }
+
+        if (product.quantity > productData.inventoryQuantity) {
+          inventoryErrors.push(
+            `Can't proceed with the quantity for ${
+              product.productName || "Product"
+            }. Only ${
+              productData.inventoryQuantity
+            } products left in inventory.`
+          );
+        }
+      }
+
+      if (inventoryErrors.length > 0) {
+        inventoryErrors.forEach((error) =>
+          toast.error(error, { position: "bottom-right" })
+        );
+        return;
+      }
+
       const orderId = Date.now().toString();
 
       const orderData = {
@@ -89,40 +128,40 @@ export default function CheckoutDialog({
       await setDoc(orderRef, orderData);
 
       const sellerOrders = {};
-    selectedProducts.forEach((product) => {
-      const { sellerID } = product;
+      selectedProducts.forEach((product) => {
+        const { sellerID } = product;
 
-      if (!sellerOrders[sellerID]) {
-        sellerOrders[sellerID] = {
-          orderId,
-          buyerDetails: {
-            name: buyerDetails.name || "N/A",
-            number: buyerDetails.number || "N/A",
-            city: buyerDetails.city || "N/A",
-            postalCode: buyerDetails.postalCode || "N/A",
-            address: buyerDetails.address || "N/A",
-            paymentMethod: buyerDetails.paymentMethod || "COD",
-          },
-          products: [],
-          totalOrderPrice: 0,
-          orderDate: new Date(),
+        if (!sellerOrders[sellerID]) {
+          sellerOrders[sellerID] = {
+            orderId,
+            buyerDetails: {
+              name: buyerDetails.name || "N/A",
+              number: buyerDetails.number || "N/A",
+              city: buyerDetails.city || "N/A",
+              postalCode: buyerDetails.postalCode || "N/A",
+              address: buyerDetails.address || "N/A",
+              paymentMethod: buyerDetails.paymentMethod || "COD",
+            },
+            products: [],
+            totalOrderPrice: 0,
+            orderDate: new Date(),
+            orderStatus: "pending",
+            buyerId: user.uid,
+          };
+        }
+
+        sellerOrders[sellerID].products.push({
+          productId: product.productId || "unknown",
+          productName: product.productName || "unknown",
+          quantity: product.quantity || 0,
+          totalPrice: product.totalPrice || 0,
+          design: product.design || [],
+          instructions: product.instructions || "No instructions",
           orderStatus: "pending",
-          buyerId: user.uid,
-        };
-      }
+        });
 
-      sellerOrders[sellerID].products.push({
-        productId: product.productId || "unknown",
-        productName: product.productName || "unknown",
-        quantity: product.quantity || 0,
-        totalPrice: product.totalPrice || 0,
-        design: product.design || [],
-        instructions: product.instructions || "No instructions",
-        orderStatus: "pending",
+        sellerOrders[sellerID].totalOrderPrice += product.totalPrice || 0;
       });
-
-      sellerOrders[sellerID].totalOrderPrice += product.totalPrice || 0;
-    });
 
       for (const sellerID in sellerOrders) {
         const sellerOrdersRef = doc(db, "sellerOrders", sellerID);
@@ -133,6 +172,21 @@ export default function CheckoutDialog({
           },
           { merge: true }
         );
+      }
+
+      for (const product of selectedProducts) {
+        const productDocRef = doc(db, "products", product.productId);
+        const productDoc = await getDoc(productDocRef);
+  
+        if (productDoc.exists()) {
+          const productData = productDoc.data();
+          const newInventoryQuantity =
+            productData.inventoryQuantity - product.quantity;
+  
+          await updateDoc(productDocRef, {
+            inventoryQuantity: newInventoryQuantity,
+          });
+        }
       }
 
       const cartRef = doc(db, "cart", user.uid);

@@ -105,19 +105,36 @@ export default function ProductsPage() {
           {filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
               <Link href={`/products/${product.id}`}>
-                <Card className="hover:shadow-xl w-60 mx-auto">
+                <Card
+                  className="hover:shadow-xl w-60 mx-auto"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    height: 260,
+                  }}
+                >
                   <div className="flex justify-center items-center h-40 rounded-t-md">
                     <img
                       src={product.images[0]}
                       alt={product.productName}
-                      className="h-40 place-items-center object-cover rounded-t-md"
+                      className="h-40 object-cover rounded-t-md"
                     />
                   </div>
                   <CardContent>
                     <Typography variant="h6" fontWeight="bold">
                       {product.productName}
                     </Typography>
-                    <Typography variant="body1" className="text-green-600">
+                    {product.inventoryQuantity === 0 && (
+                      <Typography variant="body2" color="error">
+                        Out of Stock
+                      </Typography>
+                    )}
+                    <Typography
+                      variant="body1"
+                      className="text-green-600"
+                      fontWeight="bold"
+                    >
                       Rs. {product.productPrice}
                     </Typography>
                   </CardContent>

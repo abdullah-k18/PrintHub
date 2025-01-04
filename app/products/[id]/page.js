@@ -232,6 +232,19 @@ export default function ProductDetailsPage() {
       return;
     }
 
+    if (product.inventoryQuantity === 0) {
+      toast.error("Product is Out of Stock.", { position: "bottom-right" });
+      return;
+    }
+
+    if (quantity > product.inventoryQuantity) {
+      toast.error(
+        `Can't proceed with this quantity. Only ${product.inventoryQuantity} products left in inventory.`,
+        { position: "bottom-right" }
+      );
+      return;
+    }
+
     const totalPrice = product.productPrice * quantity;
 
     try {
@@ -726,7 +739,7 @@ export default function ProductDetailsPage() {
           <Typography variant="h6" fontWeight="bold">
             More Like This
           </Typography>
-          <Box display="flex" justifyContent="center" mt={4} mb={2}> 
+          <Box display="flex" justifyContent="center" mt={4} mb={2}>
             <Box display="flex" gap={4} flexWrap="wrap" justifyContent="center">
               {similarProducts.length > 0 ? (
                 similarProducts.slice(0, 3).map((product) => (
