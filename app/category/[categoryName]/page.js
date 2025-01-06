@@ -98,32 +98,6 @@ export default function CategoryPage({ params }) {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const buyerDocRef = doc(db, "buyers", user.uid);
-          const buyerDoc = await getDoc(buyerDocRef);
-
-          if (buyerDoc.exists()) {
-            setName(buyerDoc.data().name);
-          } else {
-            console.warn("User not found in buyers collection.");
-            router.push("/login");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-          router.push("/login");
-        }
-      } else {
-        console.warn("User is not authenticated.");
-        router.push("/login");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
-
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(searchTerm.toLowerCase())
   );
