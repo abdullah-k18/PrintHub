@@ -331,11 +331,11 @@ export default function SellerOrders() {
                           </Box>
 
                           <Box>
-                          <Link href={`/products/${product.id}`}>
-                            <Typography variant="subtitle1" fontWeight="bold">
-                              {product.productName}
-                            </Typography>
-                            <Link/>
+                            <Link href={`/products/${product.id}`}>
+                              <Typography variant="subtitle1" fontWeight="bold">
+                                {product.productName}
+                              </Typography>
+                            </Link>
                             <Typography variant="body2">
                               Quantity: {product.quantity}
                             </Typography>
