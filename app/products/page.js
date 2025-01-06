@@ -52,22 +52,15 @@ export default function ProductsPage() {
 
           if (buyerDoc.exists()) {
             setName(buyerDoc.data().name);
-          } else {
-            console.warn("User not found in buyers collection.");
-            router.push("/login");
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
-          router.push("/login");
         }
-      } else {
-        console.warn("User is not authenticated.");
-        router.push("/login");
       }
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(searchTerm.toLowerCase())

@@ -30,6 +30,7 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Download } from "yet-another-react-lightbox/plugins";
 import FormHelperText from "@mui/material/FormHelperText";
+import Link from "next/link";
 
 export default function SellerOrders() {
   const [loading, setLoading] = useState(true);
@@ -330,9 +331,11 @@ export default function SellerOrders() {
                           </Box>
 
                           <Box>
+                          <Link href={`/products/${product.id}`}>
                             <Typography variant="subtitle1" fontWeight="bold">
                               {product.productName}
                             </Typography>
+                            <Link/>
                             <Typography variant="body2">
                               Quantity: {product.quantity}
                             </Typography>

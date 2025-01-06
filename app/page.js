@@ -91,6 +91,16 @@ export default function Home() {
                 Login
               </Button>
             </Link>
+
+            <Link href="/signup" passHref>
+              <Button 
+                variant="contained" 
+                sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
+                className='transition-transform duration-300 ease-in-out hover:scale-105'
+              >
+                Register
+              </Button>
+            </Link>
           </div>
         </Toolbar>
       </AppBar>
@@ -113,7 +123,7 @@ export default function Home() {
           >
             Whether you&apos;re a business or an individual, PrintHub connects you to a wide range of printing services at your fingertips.
           </Typography>
-          <Link href="/signup" passHref>
+          <Link href="/home" passHref>
             <Button 
               variant="contained" 
               sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}

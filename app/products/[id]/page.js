@@ -66,6 +66,7 @@ export default function ProductDetailsPage() {
   const [images, setImages] = useState([]);
   const [userDetails, setUserDetails] = useState({});
   const [similarProducts, setSimilarProducts] = useState([]);
+  const [user, setUser] = useState(null);
 
   const uploadDesignImage = async (file) => {
     const uniqueFileName = `design-${Date.now()}-${file.name}`;
@@ -150,30 +151,27 @@ export default function ProductDetailsPage() {
   }, [id, router]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
         try {
-          const buyerDocRef = doc(db, "buyers", user.uid);
+          const buyerDocRef = doc(db, "buyers", authUser.uid);
           const buyerDoc = await getDoc(buyerDocRef);
 
           if (buyerDoc.exists()) {
             setName(buyerDoc.data().name);
-          } else {
-            console.warn("User not found in buyers collection.");
-            router.push("/login");
           }
+
+          setUser(authUser);
         } catch (error) {
           console.error("Error fetching user data:", error);
-          router.push("/login");
         }
       } else {
-        console.warn("User is not authenticated.");
-        router.push("/login");
+        setUser(null);
       }
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const handleQuantityChange = (delta) => {
     setQuantity((prev) =>
@@ -209,24 +207,24 @@ export default function ProductDetailsPage() {
       return;
     }
 
-    if (images.length === 0) {
-      toast.error("Please upload design images.", {
-        position: "bottom-right",
-      });
-      return;
-    }
+    // if (images.length === 0) {
+    //   toast.error("Please upload design images.", {
+    //     position: "bottom-right",
+    //   });
+    //   return;
+    // }
 
-    if (!instructions.trim()) {
-      toast.error("Please provide printing instructions.", {
-        position: "bottom-right",
-      });
-      return;
-    }
+    // if (!instructions.trim()) {
+    //   toast.error("Please provide printing instructions.", {
+    //     position: "bottom-right",
+    //   });
+    //   return;
+    // }
 
     const user = auth.currentUser;
     if (!user) {
       toast.error("You must be logged in to add products to the cart.", {
-        position: "top-center",
+        position: "bottom-right",
       });
       router.push("/login");
       return;

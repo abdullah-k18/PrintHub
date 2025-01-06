@@ -50,7 +50,7 @@ export default function Cart() {
             const cartItems = cartDoc.data().products || [];
             const enrichedProducts = await Promise.all(
               cartItems
-                .filter((cartItem) => cartItem.status === "pending")
+                .filter((cartItem) => cartItem.status === "Pending")
                 .map(async (cartItem) => {
                   const productDoc = await getDoc(
                     doc(db, "products", cartItem.productId)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "../../firebase";
 import { AppBar, Toolbar, Avatar, Menu, MenuItem, Typography, ListItemIcon, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
@@ -12,7 +12,20 @@ import Link from "next/link";
 export default function BuyerNavbar({ name }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -59,51 +72,65 @@ export default function BuyerNavbar({ name }) {
           </div>
 
           <div>
-            <IconButton onClick={handleMenuOpen}>
-              <Avatar sx={{ bgcolor: 'white', color: '#28a745', fontWeight: 'bold' }}>
-                {name.charAt(0).toUpperCase()}
-              </Avatar>
-            </IconButton>
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-              <Link href="/profile" passHref>
-                <MenuItem>
-                  <Avatar sx={{ bgcolor: '#28a745', color: 'white', marginRight: '8px', fontWeight: 'bold' }}>
+            {user ? (
+              <>
+                <IconButton onClick={handleMenuOpen}>
+                  <Avatar sx={{ bgcolor: 'white', color: '#28a745', fontWeight: 'bold' }}>
                     {name.charAt(0).toUpperCase()}
                   </Avatar>
-                  <Typography sx={{ color: '#28a745', textTransform: 'capitalize', fontWeight: 'bold' }}>{name}</Typography>
-                </MenuItem>
+                </IconButton>
+                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                  <Link href="/profile" passHref>
+                    <MenuItem>
+                      <Avatar sx={{ bgcolor: '#28a745', color: 'white', marginRight: '8px', fontWeight: 'bold' }}>
+                        {name.charAt(0).toUpperCase()}
+                      </Avatar>
+                      <Typography sx={{ color: '#28a745', textTransform: 'capitalize', fontWeight: 'bold' }}>{name}</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link href="/home" passHref>
+                    <MenuItem onClick={handleMenuClose}>
+                      <ListItemIcon>
+                        <HomeIcon fontSize="small" style={{ color: 'black' }} />
+                      </ListItemIcon>
+                      <Typography>Home</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link href="/cart" passHref>
+                    <MenuItem onClick={handleMenuClose}>
+                      <ListItemIcon>
+                        <ShoppingCart fontSize="small" style={{ color: 'black' }} />
+                      </ListItemIcon>
+                      <Typography>Cart</Typography>
+                    </MenuItem>
+                  </Link>
+                  <Link href="/orders" passHref>
+                    <MenuItem onClick={handleMenuClose}>
+                      <ListItemIcon>
+                        <ShoppingBagIcon fontSize="small" style={{ color: 'black' }} />
+                      </ListItemIcon>
+                      <Typography>Orders</Typography>
+                    </MenuItem>
+                  </Link>
+                  <MenuItem onClick={handleClickOpen}>
+                    <ListItemIcon>
+                      <Logout fontSize="small" style={{ color: 'black' }} />
+                    </ListItemIcon>
+                    <Typography>Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Link href="/login" passHref>
+                <Button 
+                  variant="contained" 
+                  sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
+                  className='transition-transform duration-300 ease-in-out hover:scale-105'
+                >
+                  Login
+                </Button>
               </Link>
-              <Link href="/home" passHref>
-                <MenuItem onClick={handleMenuClose}>
-                  <ListItemIcon>
-                    <HomeIcon fontSize="small" style={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <Typography>Home</Typography>
-                </MenuItem>
-              </Link>
-              <Link href="/cart" passHref>
-                <MenuItem onClick={handleMenuClose}>
-                  <ListItemIcon>
-                    <ShoppingCart fontSize="small" style={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <Typography>Cart</Typography>
-                </MenuItem>
-              </Link>
-              <Link href="/orders" passHref>
-                <MenuItem onClick={handleMenuClose}>
-                  <ListItemIcon>
-                    <ShoppingBagIcon fontSize="small" style={{ color: 'black' }} />
-                  </ListItemIcon>
-                  <Typography>Orders</Typography>
-                </MenuItem>
-              </Link>
-              <MenuItem onClick={handleClickOpen}>
-                <ListItemIcon>
-                  <Logout fontSize="small" style={{ color: 'black' }} />
-                </ListItemIcon>
-                <Typography>Logout</Typography>
-              </MenuItem>
-            </Menu>
+            )}
           </div>
         </Toolbar>
       </AppBar>

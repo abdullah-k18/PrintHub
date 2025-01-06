@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -23,7 +22,6 @@ export default function PrintingPresses() {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     const fetchPrintingPresses = async () => {
@@ -53,21 +51,15 @@ export default function PrintingPresses() {
 
           if (buyerDoc.exists()) {
             setName(buyerDoc.data().name);
-          } else {
-            console.warn("User not found in buyers collection.");
-            router.push("/login");
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
-          router.push("/login");
         }
-      } else {
-        router.push("/login");
       }
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const filteredPresses = presses.filter(
     (press) =>
@@ -96,8 +88,8 @@ export default function PrintingPresses() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-3/4 sm:w-1/2 px-4 py-2 rounded-lg shadow-md"
           sx={{
-            '&:focus': {
-              outline: '2px solid black',
+            "&:focus": {
+              outline: "2px solid black",
             },
           }}
         />
@@ -108,22 +100,22 @@ export default function PrintingPresses() {
           {filteredPresses.map((press) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={press.id}>
               <Link href={`/presses/${press.id}`}>
-              <Card
-                sx={{ textAlign: "center" }}
-                className="cursor-pointer hover:shadow-xl"
-              >
-                <div className="bg-green-600 p-4 rounded-t-md">
-                  <StorefrontIcon sx={{ fontSize: 40, color: "white" }} />
-                </div>
-                <CardContent>
-                  <Typography variant="h6" fontWeight="bold">
-                    {press.pressName}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {`${press.address}, ${press.city}`}
-                  </Typography>
-                </CardContent>
-              </Card>
+                <Card
+                  sx={{ textAlign: "center" }}
+                  className="cursor-pointer hover:shadow-xl"
+                >
+                  <div className="bg-green-600 p-4 rounded-t-md">
+                    <StorefrontIcon sx={{ fontSize: 40, color: "white" }} />
+                  </div>
+                  <CardContent>
+                    <Typography variant="h6" fontWeight="bold">
+                      {press.pressName}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {`${press.address}, ${press.city}`}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Link>
             </Grid>
           ))}
@@ -144,6 +136,4 @@ export default function PrintingPresses() {
       <Footer />
     </div>
   );
-  
-  
 }

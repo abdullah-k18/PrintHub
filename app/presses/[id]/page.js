@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   collection,
   query,
@@ -25,19 +24,16 @@ import BuyerNavbar from "@/app/components/BuyerNavbar";
 import Footer from "@/app/components/Footer";
 
 export default function PressPage({ params }) {
-  const { id } = params; // Updated to use id from params
+  const { id } = params;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [authLoading, setAuthLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(false);
   const [name, setName] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Directly query for the seller using the id
         const sellerDocRef = doc(db, "sellers", id);
         const sellerDoc = await getDoc(sellerDocRef);
 
@@ -47,7 +43,6 @@ export default function PressPage({ params }) {
           return;
         }
 
-        // Fetch products based on the seller's UID
         const sellerUID = sellerDoc.id;
         const productsQuery = query(
           collection(db, "products"),
@@ -81,25 +76,15 @@ export default function PressPage({ params }) {
 
           if (buyerDoc.exists()) {
             setName(buyerDoc.data().name);
-          } else {
-            console.warn("User not found in buyers collection.");
-            router.push("/login");
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
-          router.push("/login");
-        } finally {
-          setAuthLoading(false);
         }
-      } else {
-        console.warn("User is not logged in.");
-        router.push("/login");
-        setAuthLoading(false);
       }
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -130,19 +115,6 @@ export default function PressPage({ params }) {
           Unable to load products for the selected press. Please try again
           later.
         </Typography>
-      </Box>
-    );
-  }
-
-  if (authLoading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <CircularProgress size={50} sx={{ color: "#28a745" }} />
       </Box>
     );
   }

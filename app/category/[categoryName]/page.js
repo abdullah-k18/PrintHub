@@ -88,6 +88,25 @@ export default function CategoryPage({ params }) {
 
           if (buyerDoc.exists()) {
             setName(buyerDoc.data().name);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const buyerDocRef = doc(db, "buyers", user.uid);
+          const buyerDoc = await getDoc(buyerDocRef);
+
+          if (buyerDoc.exists()) {
+            setName(buyerDoc.data().name);
           } else {
             console.warn("User not found in buyers collection.");
             router.push("/login");
