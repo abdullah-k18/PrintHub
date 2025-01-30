@@ -91,16 +91,6 @@ export default function Home() {
                 Login
               </Button>
             </Link>
-
-            <Link href="/signup" passHref>
-              <Button 
-                variant="contained" 
-                sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
-                className='transition-transform duration-300 ease-in-out hover:scale-105'
-              >
-                Register
-              </Button>
-            </Link>
           </div>
         </Toolbar>
       </AppBar>
@@ -126,11 +116,20 @@ export default function Home() {
           <Link href="/home" passHref>
             <Button 
               variant="contained" 
-              sx={{ backgroundColor: '#28a745', color: 'white', '&:hover': { backgroundColor: '#218838' } }}
+              sx={{ backgroundColor: '#28a745', color: 'white', marginRight: 2, fontWeight: 'bold', '&:hover': { backgroundColor: '#218838' } }}
             >
               Get Started
             </Button>
           </Link>
+          <Link href="/signup" passHref>
+              <Button 
+                variant="contained" 
+                sx={{ backgroundColor: 'white', color: '#28a745', fontWeight: 'bold' }}
+                className='transition-transform duration-300 ease-in-out hover:scale-105'
+              >
+                Register
+              </Button>
+            </Link>
         </Container>
       </section>
 
